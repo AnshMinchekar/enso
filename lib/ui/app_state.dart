@@ -7,7 +7,9 @@ import 'package:flutter/widgets.dart';
 import '../engine/models.dart';
 import '../engine/parser.dart';
 import '../engine/planner.dart';
+import '../engine/serialization.dart';
 import '../services/notifications.dart';
+import '../services/storage.dart';
 import '../services/reminder_plan.dart';
 import 'theme.dart';
 
@@ -35,13 +37,19 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     DateTime Function()? clock,
     Schedule? initialSchedule,
     NotificationGateway notifications = const NoNotifications(),
+    Store store = const NoStore(),
   }) : _clock = clock ?? DateTime.now,
        _schedule = initialSchedule,
-       _gateway = notifications {
+       _gateway = notifications,
+       _storage = store {
     _now = _clock();
   }
 
   final NotificationGateway _gateway;
+  final Store _storage;
+  bool _started = false;
+  Object? _savedDayKey;
+  Object? _savedSettingsKey;
   bool _remindersOff = false;
   Object? _scheduledKey;
 
@@ -83,6 +91,27 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   /// Reads the bundled schedule and starts the clock.
   Future<void> start() async {
+    // Settings, then the saved schedule file, then today.
+    final settings = await _storage.loadSettings();
+    _bedtimeOverride = settings.bedtimeOverride;
+    _headsUpMinutes = settings.headsUpMinutes;
+    _sound = settings.sound;
+
+    if (_schedule == null) {
+      final stored = await _storage.loadSchedule();
+      if (stored != null) {
+        final result = parseSchedule(stored.text);
+        if (result.isValid) {
+          _schedule = result.schedule;
+          _scheduleName = stored.name;
+          _scheduleSince = stored.since;
+        } else {
+          // The file changed and no longer parses: show why on the schedule
+          // file screen and keep the app usable.
+          _fileErrors = result.errors;
+        }
+      }
+    }
     _scheduleSince ??= _clock();
     if (_schedule == null) {
       final text = await rootBundle.loadString(kDemoScheduleAsset);
@@ -90,6 +119,23 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       _schedule = result.schedule;
       _loadError = result.errors.isEmpty ? null : result.errors.first.message;
     }
+
+    final day = await _storage.loadDay();
+    final schedule = _schedule;
+    if (day != null && schedule != null && day['day'] == appDay(_clock()).toIso8601String()) {
+      final plan = planFromJson((day['plan']! as Map).cast<String, Object?>(), schedule);
+      if (plan != null) {
+        _plan = plan;
+        _dismissedCuts = {
+          for (final c in (day['dismissed'] as List?) ?? const [])
+            cutFromJson((c as Map).cast<String, Object?>()),
+        };
+      }
+    }
+    _savedDayKey = (_plan, _dismissedCuts);
+    _savedSettingsKey = (_bedtimeOverride, _headsUpMinutes, _sound);
+    _started = true;
+
     WidgetsBinding.instance.addObserver(this);
     _ticker = Timer.periodic(const Duration(seconds: 15), (_) => tick());
     await _gateway.init(onAction: _onNotificationAction);
@@ -141,7 +187,42 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void notifyListeners() {
     super.notifyListeners();
+    _persist();
     _syncReminders();
+  }
+
+  /// Saves today and the settings when they changed.
+  void _persist() {
+    if (!_started) return;
+    final dayKey = (_plan, _dismissedCuts);
+    if (_savedDayKey != dayKey) {
+      _savedDayKey = dayKey;
+      final p = _plan;
+      unawaited(
+        _storage.saveDay(
+          p == null
+              ? null
+              : {
+                  'day': appDay(p.input.wake).toIso8601String(),
+                  'plan': planToJson(p),
+                  'dismissed': [for (final c in _dismissedCuts) cutToJson(c)],
+                },
+        ),
+      );
+    }
+    final settingsKey = (_bedtimeOverride, _headsUpMinutes, _sound);
+    if (_savedSettingsKey != settingsKey) {
+      _savedSettingsKey = settingsKey;
+      unawaited(
+        _storage.saveSettings(
+          StoredSettings(
+            bedtimeOverride: _bedtimeOverride,
+            headsUpMinutes: _headsUpMinutes,
+            sound: _sound,
+          ),
+        ),
+      );
+    }
   }
 
   void _syncReminders() {
@@ -216,7 +297,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   /// Switches to a schedule that passed the parser (pasted, or made with
   /// AI). Today is rebuilt from the same check-in.
-  void useSchedule(Schedule s, {required String name}) {
+  void useSchedule(Schedule s, {required String name, required String text}) {
+    unawaited(_storage.saveSchedule(StoredSchedule(name: name, text: text, since: _clock())));
     _schedule = s;
     _scheduleName = name;
     _scheduleSince = _clock();

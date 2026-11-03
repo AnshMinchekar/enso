@@ -12,6 +12,8 @@ dependencies:
   flutter_local_notifications: ^22.3.3
   flutter_timezone: ^5.1.1
   path_parsing: ^1.1.0
+  path_provider: ^2.1.6
+  shared_preferences: ^2.5.6
   timezone: ^0.11.2
   yaml: ^3.1.4
 
