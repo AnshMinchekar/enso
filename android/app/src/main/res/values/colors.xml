@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Enso tokens (docs/design/style-sheet.md). -->
+    <color name="ic_launcher_background">#E2E7EF</color>
+    <color name="launch_background">#F5F2EC</color>
+</resources>

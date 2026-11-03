@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher icon: the enso, an open circle drawn in one stroke, in the
+     dusk accent over a faint full ring. Sized for the 72 dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M36,54A18,18 0,1 1,72 54A18,18 0,1 1,36 54"
+        android:strokeColor="#405C6F8C"
+        android:strokeWidth="4"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M54,36A18,18 0,1 1,40.62 66.04"
+        android:strokeColor="#FF5C6F8C"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+</vector>
