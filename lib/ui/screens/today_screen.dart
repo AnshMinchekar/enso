@@ -168,6 +168,11 @@ class _DayState extends State<_Day> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
+                              if (state.remindersOff)
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(Space.md, Space.sm, Space.md, 0),
+                                  child: RemindersOffBanner(),
+                                ),
                               if (cuts.isNotEmpty)
                                 _Summary(plan: plan, cuts: cuts, onClose: state.dismissSummary),
                               if (plan.overflowMinutes > 0)
@@ -637,6 +642,11 @@ class _BeforeCheckIn extends StatelessWidget {
               ),
             ),
           ),
+          if (state.remindersOff)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: Space.md),
+              child: RemindersOffBanner(),
+            ),
           if (state.loadError != null)
             Glass(
               tone: GlassTone.sunk,
@@ -768,4 +778,47 @@ String windDownLine(int minutesLeft) {
     return '${capitalise(numberWords(minutesLeft))} quiet minutes left. The day is done.';
   }
   return '${formatDuration(minutesLeft)} of quiet left. The day is done.';
+}
+
+/// Soft inline note when notifications are blocked. One button fixes it.
+class RemindersOffBanner extends StatelessWidget {
+  const RemindersOffBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = EnsoPalette.of(context);
+    final state = AppScope.read(context);
+    return Glass(
+      tone: GlassTone.sunk,
+      radius: Radii.small,
+      padding: const EdgeInsets.fromLTRB(20, 16, 8, 16),
+      child: Row(
+        children: [
+          LineIcon(LineIcons.bell, size: 22, color: p.ink2),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Reminders are off',
+                  style: EnsoType.bodySmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    height: 1.3,
+                    color: p.ink,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'You\u2019ll only see changes while the app is open.',
+                  style: EnsoType.caption.copyWith(color: p.ink2),
+                ),
+              ],
+            ),
+          ),
+          TextAction(label: 'Turn on', accent: true, onTap: state.turnOnReminders),
+        ],
+      ),
+    );
+  }
 }

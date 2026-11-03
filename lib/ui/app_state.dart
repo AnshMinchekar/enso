@@ -7,6 +7,8 @@ import 'package:flutter/widgets.dart';
 import '../engine/models.dart';
 import '../engine/parser.dart';
 import '../engine/planner.dart';
+import '../services/notifications.dart';
+import '../services/reminder_plan.dart';
 import 'theme.dart';
 
 /// Temporary built-in schedule until import, templates and onboarding land in
@@ -29,11 +31,19 @@ enum DebugLook { auto, morning, afternoon, evening, windDown }
 /// Today's state: the schedule, the plan and the clock. Kept in memory until
 /// persistence arrives in step 5.
 class AppState extends ChangeNotifier with WidgetsBindingObserver {
-  AppState({DateTime Function()? clock, Schedule? initialSchedule})
-    : _clock = clock ?? DateTime.now,
-      _schedule = initialSchedule {
+  AppState({
+    DateTime Function()? clock,
+    Schedule? initialSchedule,
+    NotificationGateway notifications = const NoNotifications(),
+  }) : _clock = clock ?? DateTime.now,
+       _schedule = initialSchedule,
+       _gateway = notifications {
     _now = _clock();
   }
+
+  final NotificationGateway _gateway;
+  bool _remindersOff = false;
+  Object? _scheduledKey;
 
   final DateTime Function() _clock;
   Timer? _ticker;
@@ -82,7 +92,67 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
     WidgetsBinding.instance.addObserver(this);
     _ticker = Timer.periodic(const Duration(seconds: 15), (_) => tick());
+    await _gateway.init(onAction: _onNotificationAction);
+    _remindersOff = !await _gateway.notificationsEnabled();
+    final launch = await _gateway.launchAction();
+    if (launch != null) _onNotificationAction(launch);
     notifyListeners();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Reminders
+
+  /// Notifications are blocked: Today shows the calm "Reminders are off"
+  /// banner.
+  bool get remindersOff => _remindersOff;
+
+  /// "Turn on": the Android prompt if it can still be shown, otherwise the
+  /// app's notification settings.
+  Future<void> turnOnReminders() async {
+    final granted = await _gateway.requestNotifications();
+    if (!granted) await _gateway.openNotificationSettings();
+    await refreshReminderPermission();
+  }
+
+  /// Onboarding's "Allow": notifications, then exact alarms (Android 14+).
+  Future<void> allowReminders() async {
+    await _gateway.requestNotifications();
+    await _gateway.requestExactAlarms();
+    await refreshReminderPermission();
+  }
+
+  Future<void> refreshReminderPermission() async {
+    final off = !await _gateway.notificationsEnabled();
+    if (off != _remindersOff) {
+      _remindersOff = off;
+      notifyListeners();
+    }
+  }
+
+  void _onNotificationAction(String? actionId) {
+    // Start just opens Today. +10 min extends the block that is on now.
+    if (actionId == kActionPlusTen && _plan != null && current != null) {
+      act(const ExtendAction(10));
+    }
+  }
+
+  /// Every change runs through here; reminders are rescheduled only when the
+  /// plan or the reminder settings changed.
+  @override
+  void notifyListeners() {
+    super.notifyListeners();
+    _syncReminders();
+  }
+
+  void _syncReminders() {
+    final plan = checkedIn ? _plan : null;
+    final key = (plan, _headsUpMinutes, _sound);
+    if (_scheduledKey == key) return;
+    _scheduledKey = key;
+    final reminders = plan == null
+        ? const <Reminder>[]
+        : remindersFor(plan, _clock(), headsUpMinutes: _headsUpMinutes);
+    unawaited(_gateway.replaceAll(reminders, sound: _sound));
   }
 
   @override
@@ -94,7 +164,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) tick();
+    if (state == AppLifecycleState.resumed) {
+      tick();
+      unawaited(refreshReminderPermission());
+    }
   }
 
   /// Moves the clock to now. Called every 15 seconds and on resume.
