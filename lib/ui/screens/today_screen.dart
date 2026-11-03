@@ -11,6 +11,7 @@ import '../widgets/hero_text.dart';
 import '../widgets/line_icon.dart';
 import '../widgets/morph_hero.dart';
 import '../widgets/surfaces.dart';
+import '../widgets/common.dart';
 import '../widgets/timeline.dart';
 import 'block_sheet.dart';
 import 'check_in_screen.dart';
@@ -133,59 +134,174 @@ class _DayState extends State<_Day> {
     final cuts = state.visibleCuts;
     final hasNotes = cuts.isNotEmpty || plan.overflowMinutes > 0;
 
+    // One scroll for the whole day: the hero card, notes and the timeline
+    // move together, so a long summary never squeezes the timeline.
     return SafeArea(
       bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const _Header(),
-          if (focus != null) ...[
-            const SizedBox(height: 16),
-            _HeroCard(
-              block: focus,
-              now: state.now,
-              onTap: () => _open(focus, heroCardTag(focus.id)),
-              fadeIn: _stagger,
-            ),
-            const SizedBox(height: 12),
-            _UpNext(block: state.upNext, bedtime: plan.bedtime),
-          ],
-          AnimatedSize(
-            duration: Motion.replanDuration,
-            curve: Motion.replan,
-            alignment: Alignment.topCenter,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (cuts.isNotEmpty)
-                  _Summary(plan: plan, cuts: cuts, onClose: state.dismissSummary),
-                if (plan.overflowMinutes > 0) _OverflowNote(minutes: plan.overflowMinutes),
-              ],
+          Expanded(
+            child: BottomFade(
+              from: 0.86,
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (focus != null) ...[
+                          const SizedBox(height: 16),
+                          _HeroCard(
+                            block: focus,
+                            now: state.now,
+                            onTap: () => _open(focus, heroCardTag(focus.id)),
+                            fadeIn: _stagger,
+                          ),
+                          const SizedBox(height: 12),
+                          _UpNext(block: state.upNext, bedtime: plan.bedtime),
+                        ],
+                        AnimatedSize(
+                          duration: Motion.replanDuration,
+                          curve: Motion.replan,
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (cuts.isNotEmpty)
+                                _Summary(plan: plan, cuts: cuts, onClose: state.dismissSummary),
+                              if (plan.overflowMinutes > 0)
+                                _OverflowNote(minutes: plan.overflowMinutes),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(24, hasNotes ? 20 : 24, 12, 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Your day', style: EnsoType.label.copyWith(color: p.ink2)),
+                              TextAction(
+                                label: 'Running late?',
+                                icon: LineIcons.clock,
+                                onTap: () => showRunningLateSheet(context),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                    sliver: TimelineSliver(
+                      plan: plan,
+                      now: state.now,
+                      stagger: _stagger,
+                      onTap: _open,
+                    ),
+                  ),
+                  SliverToBoxAdapter(child: SizedBox(height: 96 + Space.bottomInset(context))),
+                ],
+              ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(24, hasNotes ? 20 : 24, 12, 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ],
+      ),
+    );
+  }
+}
+
+/// "Running late?": shows what restarting the current block from now would
+/// do, and only moves the day when asked. Says so calmly when nothing needs
+/// to move.
+Future<void> showRunningLateSheet(BuildContext context) => Navigator.of(context).push(
+  BlockSheetRoute<void>(
+    scrim: EnsoPalette.of(context).scrim,
+    builder: (_) => const RunningLateSheet(),
+  ),
+);
+
+class RunningLateSheet extends StatelessWidget {
+  const RunningLateSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = AppScope.of(context);
+    final p = EnsoPalette.of(context);
+    final now = state.now;
+    final current = state.current;
+    final late = current == null ? 0 : now.difference(current.start).inMinutes;
+    final canMove = current != null && late >= 1;
+
+    final String body;
+    String? preview;
+    if (canMove) {
+      body =
+          '${current.block.name} was planned from ${formatClock(current.start)}. '
+          'Start it again now, at ${formatClock(now)}, and the rest of the day re-plans around it.';
+      preview = state.preview(const RunningLateAction(), current.id);
+    } else if (current != null) {
+      body = '${current.block.name} has only just started, so nothing needs to move.';
+    } else {
+      final next = state.next;
+      body = next == null
+          ? 'Nothing needs to move.'
+          : 'Nothing has started yet. ${next.block.name} begins at '
+                '${formatClock(next.start)}, so nothing needs to move.';
+    }
+
+    return Glass(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+      shadows: Elevation.sheet(p),
+      padding: EdgeInsets.fromLTRB(24, 12, 24, Space.bottomInset(context) - 8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SheetHandle(),
+          const SizedBox(height: 24),
+          Text('Running late?', style: EnsoType.heading.copyWith(color: p.ink)),
+          const SizedBox(height: 12),
+          Text(body, style: EnsoType.body.copyWith(color: p.ink2)),
+          if (preview != null) ...[
+            const SizedBox(height: 20),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Your day', style: EnsoType.label.copyWith(color: p.ink2)),
-                TextAction(
-                  label: 'Running late?',
-                  icon: LineIcons.clock,
-                  onTap: () => state.act(const RunningLateAction()),
+                Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: LineIcon(LineIcons.clock, size: 18, color: p.ink2),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    preview,
+                    style: EnsoType.bodySmall.copyWith(fontSize: 14, height: 1.45, color: p.ink2),
+                  ),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: Timeline(
-              plan: plan,
-              now: state.now,
-              stagger: _stagger,
-              fadeFrom: hasNotes ? 0.55 : 0.65,
-              onTap: _open,
+          ],
+          const SizedBox(height: 32),
+          if (canMove) ...[
+            PrimaryButton(
+              label: 'Start ${current.block.name} now',
+              onTap: () {
+                Navigator.of(context).pop();
+                state.act(const RunningLateAction());
+              },
             ),
-          ),
+            const SizedBox(height: 4),
+            Center(
+              child: SizedBox(
+                height: 48,
+                child: TextAction(label: 'Not now', onTap: () => Navigator.of(context).pop()),
+              ),
+            ),
+          ] else
+            SecondaryButton(label: 'OK', onTap: () => Navigator.of(context).pop()),
         ],
       ),
     );

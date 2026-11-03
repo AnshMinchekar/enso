@@ -189,7 +189,9 @@ void main() {
       expect(state.plan!.blockById('deep_work'), isNull);
     });
 
-    testWidgets('running late restarts the current block from now', (tester) async {
+    testWidgets('running late: the sheet previews, then restarts the block from now', (
+      tester,
+    ) async {
       final clock = TestClock(at(6, 15));
       final state = await pumpApp(tester, clock);
       await buildDay(tester, state, wake: at(6, 15));
@@ -198,7 +200,57 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Running late?'));
       await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Deep work was planned from 10:45. Start it again now, at 11:00, '
+          'and the rest of the day re-plans around it.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Starting from now'), findsOneWidget);
+      await tester.tap(find.text('Start Deep work now'));
+      await tester.pumpAndSettle();
       expect(state.plan!.blockById('deep_work')!.start, at(11, 0));
+    });
+
+    testWidgets('running late before anything starts: nothing needs to move', (tester) async {
+      final clock = TestClock(at(6, 16));
+      final state = await pumpApp(tester, clock);
+      await buildDay(tester, state, wake: at(6, 15));
+      final before = state.plan;
+      await tester.tap(find.text('Running late?'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Nothing has started yet. Breakfast begins at 06:20, so nothing needs to move.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      expect(identical(state.plan, before), isTrue);
+    });
+
+    testWidgets('earlier blocks fold away and the whole day scrolls', (tester) async {
+      final clock = TestClock(at(6, 15));
+      final state = await pumpApp(tester, clock);
+      await buildDay(tester, state, wake: at(6, 15));
+      clock.now = at(11, 0);
+      state.tick();
+      await tester.pumpAndSettle();
+      // Breakfast…Lunch are earlier; Lunch (the block before now) stays.
+      expect(find.text('Earlier today · 5 blocks'), findsOneWidget);
+      expect(find.text('Language practice'), findsNothing);
+      await tester.tap(find.text('Earlier today · 5 blocks'));
+      await tester.pumpAndSettle();
+      expect(find.text('Language practice'), findsOneWidget);
+      expect(find.text('Hide earlier blocks'), findsOneWidget);
+
+      // Everything scrolls together: drag up and the hero card leaves.
+      await tester.drag(find.text('Your day'), const Offset(0, -500));
+      await tester.pumpAndSettle();
+      expect(find.text('NOW'), findsNothing);
+      await tester.drag(find.text('Gaming'), const Offset(0, -1500));
+      await tester.pumpAndSettle();
+      expect(find.text('Lights out'), findsWidgets, reason: 'the end of the day is reachable');
     });
 
     testWidgets('wind down after the last block starts', (tester) async {

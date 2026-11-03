@@ -23,66 +23,70 @@ class WakePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = EnsoPalette.of(context);
-    return Glass(
-      radius: Radii.hero,
-      child: SizedBox(
-        height: 232,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 16,
-              right: 16,
-              top: 80,
-              height: 72,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: p.sunk,
-                  borderRadius: BorderRadius.circular(Radii.small),
+    // The rows have fixed heights, so the system font size must not scale
+    // the 60 dp digits out of them.
+    return MediaQuery.withNoTextScaling(
+      child: Glass(
+        radius: Radii.hero,
+        child: SizedBox(
+          height: 232,
+          child: Stack(
+            children: [
+              Positioned(
+                left: 16,
+                right: 16,
+                top: 80,
+                height: 72,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: p.sunk,
+                    borderRadius: BorderRadius.circular(Radii.small),
+                  ),
                 ),
               ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: _Wheel(
-                      semanticsLabel: 'Hour',
-                      count: 24,
-                      selected: value.hour,
-                      alignEnd: true,
-                      label: (i) => i.toString().padLeft(2, '0'),
-                      onChanged: (h) => onChanged(ClockTime(h, value.minute)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: _Wheel(
+                        semanticsLabel: 'Hour',
+                        count: 24,
+                        selected: value.hour,
+                        alignEnd: true,
+                        label: (i) => i.toString().padLeft(2, '0'),
+                        onChanged: (h) => onChanged(ClockTime(h, value.minute)),
+                      ),
                     ),
                   ),
-                ),
-                Transform.translate(
-                  offset: const Offset(0, -6),
-                  child: Text(
-                    ':',
-                    style: EnsoType.picker.copyWith(
-                      fontSize: 52,
-                      fontWeight: FontWeight.w200,
-                      color: p.ink2,
+                  Transform.translate(
+                    offset: const Offset(0, -6),
+                    child: Text(
+                      ':',
+                      style: EnsoType.picker.copyWith(
+                        fontSize: 52,
+                        fontWeight: FontWeight.w200,
+                        color: p.ink2,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: _Wheel(
-                      semanticsLabel: 'Minute',
-                      count: 60 ~/ kPickerMinuteStep,
-                      selected: value.minute ~/ kPickerMinuteStep,
-                      alignEnd: false,
-                      label: (i) => (i * kPickerMinuteStep).toString().padLeft(2, '0'),
-                      onChanged: (m) => onChanged(ClockTime(value.hour, m * kPickerMinuteStep)),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: _Wheel(
+                        semanticsLabel: 'Minute',
+                        count: 60 ~/ kPickerMinuteStep,
+                        selected: value.minute ~/ kPickerMinuteStep,
+                        alignEnd: false,
+                        label: (i) => (i * kPickerMinuteStep).toString().padLeft(2, '0'),
+                        onChanged: (m) => onChanged(ClockTime(value.hour, m * kPickerMinuteStep)),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -224,7 +228,15 @@ class _WheelState extends State<_Wheel> with SingleTickerProviderStateMixin {
           opacity: opacity,
           child: Text(
             widget.label(_wrap(i)),
-            style: base.copyWith(fontSize: size, letterSpacing: a < 1 ? -0.02 * size * (1 - a) : 0),
+            // One line exactly as tall as the font, with the leading split
+            // evenly (as CSS line-height does in the mockup), so the digits
+            // sit on the band's centre instead of overflowing the 72 dp row.
+            style: base.copyWith(
+              fontSize: size,
+              height: 1,
+              leadingDistribution: TextLeadingDistribution.even,
+              letterSpacing: a < 1 ? -0.02 * size * (1 - a) : 0,
+            ),
           ),
         ),
       ),

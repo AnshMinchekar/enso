@@ -31,40 +31,52 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final _pages = PageController();
-  int _page = 0;
+  int _step = 0;
   StarterTemplate? _template;
 
-  @override
-  void dispose() {
-    _pages.dispose();
-    super.dispose();
-  }
+  void _next() => setState(() => _step++);
 
-  void _next() => _pages.animateToPage(
-    _page + 1,
-    duration: Motion.checkInDuration * 1.5,
-    curve: Motion.checkIn,
-  );
-
-  void _finish() => Navigator.of(context).maybePop();
+  // Navigator.pop, not maybePop: the back handler only steps backwards.
+  void _finish() => Navigator.of(context).pop();
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: false,
-      child: PageView(
-        controller: _pages,
-        onPageChanged: (i) => setState(() => _page = i),
-        children: [
-          _Welcome(onNext: _next),
-          _Template(
-            selected: _template,
-            onSelect: (t) => setState(() => _template = t),
-            onNext: _next,
+    final Widget page = switch (_step) {
+      0 => _Welcome(onNext: _next),
+      1 => _Template(
+        selected: _template,
+        onSelect: (t) => setState(() => _template = t),
+        onNext: _next,
+      ),
+      _ => _Permissions(onAllow: _finish, onLater: _finish),
+    };
+    // Steps cross-fade and rise 24 dp on the check-in spring, like every
+    // other screen change. Back returns to the previous step.
+    return PopScope(
+      canPop: _step == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _step > 0) setState(() => _step--);
+      },
+      child: SafeArea(
+        bottom: false,
+        child: AnimatedSwitcher(
+          duration: Motion.checkInDuration,
+          reverseDuration: const Duration(milliseconds: 200),
+          switchInCurve: Motion.checkIn,
+          switchOutCurve: Curves.easeOut,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: AnimatedBuilder(
+              animation: animation,
+              child: child,
+              builder: (context, child) =>
+                  Transform.translate(offset: Offset(0, 24 * (1 - animation.value)), child: child),
+            ),
           ),
-          _Permissions(onAllow: _finish, onLater: _finish),
-        ],
+          layoutBuilder: (current, previous) =>
+              Stack(fit: StackFit.expand, children: [...previous, ?current]),
+          child: KeyedSubtree(key: ValueKey(_step), child: page),
+        ),
       ),
     );
   }
