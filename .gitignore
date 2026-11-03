@@ -46,3 +46,19 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Signing secrets
+*.jks
+*.keystore
+android/key.properties
+
+# Machine-specific SDK path
+android/local.properties
+
+# Local environment files
+.env
+*.env
+
+# Windows clutter
+Thumbs.db
+desktop.ini
