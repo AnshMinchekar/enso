@@ -242,3 +242,231 @@ class ParseResult {
   /// True when the text contains no `routine` block at all.
   bool get hasNoRoutineBlock => errors.any((e) => e.kind == ScheduleErrorKind.noRoutineBlock);
 }
+
+// -----------------------------------------------------------------------------
+// Planning
+
+/// A one-off errand added at check-in, for example Haircut, 60 min.
+class Errand {
+  const Errand(this.name, this.minutes);
+
+  final String name;
+  final int minutes;
+}
+
+/// A block whose times are already settled during a re-plan: finished, or in
+/// progress (possibly extended). The planner keeps these times as they are.
+class LockedBlock {
+  const LockedBlock(this.blockId, this.start, this.end);
+
+  final String blockId;
+  final DateTime start;
+  final DateTime end;
+}
+
+/// Everything the planner needs about today.
+class DayInput {
+  const DayInput({
+    required this.wake,
+    this.dayTypes = const {},
+    this.errands = const [],
+    this.bedtimeOverride,
+    this.now,
+    this.locked = const [],
+    this.removed = const {},
+  });
+
+  /// When the user woke up. The day starts 5 minutes later.
+  final DateTime wake;
+
+  /// Selected day types, for example {gym, cook}.
+  final Set<String> dayTypes;
+
+  final List<Errand> errands;
+
+  /// Local bedtime override from Settings. Wins over the file's bedtime.
+  final ClockTime? bedtimeOverride;
+
+  /// Set when re-planning. Remaining blocks are planned from here.
+  final DateTime? now;
+
+  /// Finished and in-progress blocks that keep their times when re-planning.
+  final List<LockedBlock> locked;
+
+  /// Blocks taken out of today: skipped, or marked done before they started.
+  final Set<String> removed;
+
+  DayInput copyWith({
+    DateTime? now,
+    List<LockedBlock>? locked,
+    Set<String>? removed,
+    ClockTime? bedtimeOverride,
+  }) => DayInput(
+    wake: wake,
+    dayTypes: dayTypes,
+    errands: errands,
+    bedtimeOverride: bedtimeOverride ?? this.bedtimeOverride,
+    now: now ?? this.now,
+    locked: locked ?? this.locked,
+    removed: removed ?? this.removed,
+  );
+}
+
+/// A block placed on today's timeline.
+class PlannedBlock {
+  const PlannedBlock(this.block, this.start, this.end);
+
+  final BlockDef block;
+  final DateTime start;
+  final DateTime end;
+
+  String get id => block.id;
+
+  int get minutes => end.difference(start).inMinutes;
+
+  @override
+  String toString() => 'PlannedBlock(${block.id} ${_hm(start)}–${_hm(end)})';
+}
+
+String _hm(DateTime t) =>
+    '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+
+/// A block that was shortened or dropped to make the day fit.
+class Cut {
+  const Cut({
+    required this.blockId,
+    required this.fromMinutes,
+    required this.toMinutes,
+    this.dropped = false,
+  });
+
+  final String blockId;
+  final int fromMinutes;
+  final int toMinutes;
+  final bool dropped;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Cut &&
+      other.blockId == blockId &&
+      other.fromMinutes == fromMinutes &&
+      other.toMinutes == toMinutes &&
+      other.dropped == dropped;
+
+  @override
+  int get hashCode => Object.hash(blockId, fromMinutes, toMinutes, dropped);
+
+  @override
+  String toString() => 'Cut($blockId $fromMinutes → $toMinutes${dropped ? ', dropped' : ''})';
+}
+
+/// Today's timeline.
+class Plan {
+  const Plan({
+    required this.schedule,
+    required this.input,
+    required this.blocks,
+    required this.bedtime,
+    this.cuts = const [],
+    this.missed = const [],
+    this.overflowMinutes = 0,
+  });
+
+  /// The schedule and input this plan was built from, so actions can re-plan.
+  final Schedule schedule;
+  final DayInput input;
+
+  /// Blocks in time order.
+  final List<PlannedBlock> blocks;
+
+  /// When the day ends (file bedtime or the override).
+  final DateTime bedtime;
+
+  /// Blocks shortened or dropped to fit the day.
+  final List<Cut> cuts;
+
+  /// Unpinned blocks left out because their part of the day was already over
+  /// at wake time, and pinned blocks that had already ended.
+  final List<BlockDef> missed;
+
+  /// Minutes the day is over by after every allowed cut. 0 when the day fits.
+  final int overflowMinutes;
+
+  PlannedBlock? blockById(String id) {
+    for (final b in blocks) {
+      if (b.id == id) return b;
+    }
+    return null;
+  }
+
+  /// The block running at [time], if any.
+  PlannedBlock? blockAt(DateTime time) {
+    for (final b in blocks) {
+      if (!time.isBefore(b.start) && time.isBefore(b.end)) return b;
+    }
+    return null;
+  }
+
+  Cut? cutFor(String blockId) {
+    for (final c in cuts) {
+      if (c.blockId == blockId) return c;
+    }
+    return null;
+  }
+}
+
+/// Something the user does to today's plan.
+sealed class PlanAction {
+  const PlanAction();
+}
+
+/// Add [minutes] to the block in progress.
+class ExtendAction extends PlanAction {
+  const ExtendAction(this.minutes);
+  final int minutes;
+}
+
+/// Take a block out of today. Its time goes to the flexible blocks.
+class SkipAction extends PlanAction {
+  const SkipAction(this.blockId);
+  final String blockId;
+}
+
+/// Finish a block now. If it hasn't started, it is taken out of today.
+class DoneAction extends PlanAction {
+  const DoneAction(this.blockId);
+  final String blockId;
+}
+
+/// The block in progress (or the next one) starts again from now, and the
+/// rest of the day shifts after it.
+class RunningLateAction extends PlanAction {
+  const RunningLateAction();
+}
+
+enum PlanChangeKind { moved, shortened, lengthened, dropped, added }
+
+/// One difference between a plan and its re-planned version.
+class PlanChange {
+  const PlanChange({
+    required this.kind,
+    required this.block,
+    this.fromStart,
+    this.toStart,
+    this.fromMinutes,
+    this.toMinutes,
+  });
+
+  final PlanChangeKind kind;
+  final BlockDef block;
+  final DateTime? fromStart;
+  final DateTime? toStart;
+  final int? fromMinutes;
+  final int? toMinutes;
+
+  @override
+  String toString() =>
+      'PlanChange(${kind.name} ${block.id}'
+      '${toStart == null ? '' : ' → ${_hm(toStart!)}'}'
+      '${toMinutes == null ? '' : ' $fromMinutes→$toMinutes min'})';
+}
