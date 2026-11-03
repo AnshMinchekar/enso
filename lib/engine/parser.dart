@@ -171,11 +171,11 @@ class _Parser {
 
     _checkUnknownKeys(root, _topLevelKeys, 'The schedule');
 
-    final bedtime = _requiredTime(root, 'bedtime', _yamlFirstLine, 'bedtime', example: '22:30');
+    final bedtime = _requiredTime(root, 'bedtime', _yamlFirstLine, 'Bedtime', example: '22:30');
     final wakeNode = root.nodes['wake_target'];
     ClockTime? wakeTarget;
     if (wakeNode != null) {
-      wakeTarget = _time(wakeNode, 'wake_target', example: '06:30');
+      wakeTarget = _time(wakeNode, 'The wake_target', example: '06:30');
     }
     final dayTypes = _dayTypes(root);
     final blocks = _blocks(root, dayTypes);
@@ -223,7 +223,7 @@ class _Parser {
   }) {
     final node = map.nodes[key];
     if (node == null || node.value == null) {
-      _error(fallbackLine, 'The schedule has no $label. Add one, for example $key: "$example".');
+      _error(fallbackLine, 'The schedule has no $key. Add one, for example $key: "$example".');
       return null;
     }
     return _time(node, label, example: example);
@@ -236,9 +236,19 @@ class _Parser {
       _error(
         _lineOf(node),
         '$label should be a 24-hour time in quotes like "$example", but it is ${_show(value)}.',
+        suggestion: _timeSuggestion(value),
       );
     }
     return parsed;
+  }
+
+  /// "2230", 630 or "22.30" → "22:30". Null when it doesn't look like a time.
+  static String? _timeSuggestion(Object? value) {
+    if (value is! String && value is! int) return null;
+    final m = RegExp(r'^(\d{1,2})[.hH ]?(\d{2})$').firstMatch(value.toString().trim());
+    if (m == null) return null;
+    final t = ClockTime.tryParse('${m.group(1)}:${m.group(2)}');
+    return t == null ? null : '"$t"';
   }
 
   List<String>? _dayTypes(YamlMap root) {

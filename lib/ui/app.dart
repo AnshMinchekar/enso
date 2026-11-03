@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_state.dart';
-import 'screens/check_in_screen.dart';
+import 'routes.dart';
 import 'screens/today_screen.dart';
 import 'theme.dart';
 import 'widgets/ambience.dart';
@@ -77,7 +77,7 @@ class _HomeRoute extends PageRoute<void> {
   Duration get transitionDuration => Duration.zero;
 
   @override
-  bool canTransitionTo(TransitionRoute<dynamic> nextRoute) => nextRoute is CheckInRoute;
+  bool canTransitionTo(TransitionRoute<dynamic> nextRoute) => nextRoute is EnsoPageRoute;
 
   @override
   Widget buildPage(

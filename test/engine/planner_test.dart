@@ -230,6 +230,19 @@ void main() {
     });
   });
 
+  test('bedtime override can be changed and cleared mid-day', () {
+    final input = DayInput(
+      wake: at('06:15'),
+      dayTypes: {'gym'},
+      bedtimeOverride: const ClockTime(23, 0),
+    );
+    final cleared = buildPlan(sample, input.withBedtimeOverride(null));
+    expect(cleared.bedtime, at('22:30'));
+    final later = buildPlan(sample, input.withBedtimeOverride(const ClockTime(23, 30)));
+    expect(later.blocks.last.end, at('23:30'));
+    expect(input.withBedtimeOverride(null).dayTypes, {'gym'});
+  });
+
   group('workday.md', () {
     test('wake 07:00: commute 08:30, work 09:00–17:00, no cuts', () {
       final p = buildPlan(workday, DayInput(wake: at('07:00'), dayTypes: {'rest'}));

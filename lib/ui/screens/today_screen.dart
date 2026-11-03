@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../engine/models.dart';
 import '../app_state.dart';
+import '../routes.dart';
 import '../format.dart';
 import '../theme.dart';
 import '../widgets/ambience.dart';
@@ -13,6 +14,7 @@ import '../widgets/surfaces.dart';
 import '../widgets/timeline.dart';
 import 'block_sheet.dart';
 import 'check_in_screen.dart';
+import 'settings_screen.dart';
 
 /// Hero tag shared by "Check in", "Build my day" and the hero card.
 const String kDayCardTag = 'day-card';
@@ -88,8 +90,11 @@ class _Header extends StatelessWidget {
               ),
             ),
           ),
-          // Settings arrives with the other screens in step 3b.
-          const IconAction(icon: LineIcons.settings, label: 'Settings'),
+          IconAction(
+            icon: LineIcons.settings,
+            label: 'Settings',
+            onTap: () => pushScreen<void>(context, const SettingsScreen()),
+          ),
         ],
       ),
     );
@@ -535,7 +540,7 @@ class _BeforeCheckIn extends StatelessWidget {
                 label: 'Check in',
                 onTap: state.schedule == null
                     ? null
-                    : () => Navigator.of(context).push(CheckInRoute()),
+                    : () => pushScreen<void>(context, const CheckInScreen()),
               ),
             ),
           ),

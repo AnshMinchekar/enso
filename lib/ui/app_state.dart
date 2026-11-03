@@ -13,6 +13,12 @@ import 'theme.dart';
 /// step 6.
 const String kDemoScheduleAsset = 'assets/demo/sample.md';
 
+/// Default notification sound (spec § Settings).
+const String kDefaultSound = 'Soft chime';
+
+/// The copyable prompt for "Make one with AI". Do not rewrite it.
+const String kAiPromptAsset = 'assets/prompts/create_with_ai.md';
+
 /// What the debug-only time-of-day switch is forcing.
 enum DebugLook { auto, morning, afternoon, evening, windDown }
 
@@ -35,11 +41,27 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Set<Cut> _dismissedCuts = {};
   bool _justBuilt = false;
   String? _loadError;
+  String _scheduleName = 'sample.md';
+  DateTime? _scheduleSince;
+  List<ScheduleError> _fileErrors = const [];
+  ClockTime? _bedtimeOverride;
+  int _headsUpMinutes = 5;
+  String _sound = kDefaultSound;
 
   Schedule? get schedule => _schedule;
   Plan? get plan => _plan;
   DateTime get now => _now;
   String? get loadError => _loadError;
+
+  /// File name of the running schedule.
+  String get scheduleName => _scheduleName;
+
+  /// When the running schedule was first used.
+  DateTime get scheduleSince => _scheduleSince ?? _now;
+
+  /// Problems with a newer version of the file. The previous schedule keeps
+  /// running. Filled by file import in step 6.
+  List<ScheduleError> get fileErrors => _fileErrors;
 
   /// True right after "Build my day", so Today can stagger its rows in once.
   bool get justBuilt => _justBuilt;
@@ -47,6 +69,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   /// Reads the bundled schedule and starts the clock.
   Future<void> start() async {
+    _scheduleSince ??= _clock();
     if (_schedule == null) {
       final text = await rootBundle.loadString(kDemoScheduleAsset);
       final result = parseSchedule(text);
@@ -104,10 +127,72 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }) {
     final s = _schedule;
     if (s == null) return;
-    _plan = buildPlan(s, DayInput(wake: wake, dayTypes: dayTypes, errands: errands));
+    _plan = buildPlan(
+      s,
+      DayInput(wake: wake, dayTypes: dayTypes, errands: errands, bedtimeOverride: _bedtimeOverride),
+    );
     _dismissedCuts = {};
     _justBuilt = true;
     HapticFeedback.mediumImpact();
+    notifyListeners();
+  }
+
+  /// Switches to a schedule that passed the parser (pasted, or made with
+  /// AI). Today is rebuilt from the same check-in.
+  void useSchedule(Schedule s, {required String name}) {
+    _schedule = s;
+    _scheduleName = name;
+    _scheduleSince = _clock();
+    _fileErrors = const [];
+    _loadError = null;
+    final p = _plan;
+    if (p != null && checkedIn) {
+      _plan = buildPlan(
+        s,
+        DayInput(
+          wake: p.input.wake,
+          dayTypes: p.input.dayTypes.intersection(s.dayTypes.toSet()),
+          errands: p.input.errands,
+          bedtimeOverride: _bedtimeOverride,
+        ),
+      );
+      _dismissedCuts = {};
+    }
+    notifyListeners();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Settings (in memory until step 5)
+
+  /// Local bedtime override. Null uses the file's bedtime.
+  ClockTime? get bedtimeOverride => _bedtimeOverride;
+
+  /// The bedtime in effect.
+  ClockTime? get bedtime => _bedtimeOverride ?? _schedule?.bedtime;
+
+  /// Sets the bedtime. Choosing the file's own bedtime clears the override.
+  /// Today re-plans straight away.
+  void setBedtime(ClockTime? t) {
+    _bedtimeOverride = t == _schedule?.bedtime ? null : t;
+    final p = _plan;
+    final s = _schedule;
+    if (p != null && s != null) {
+      _plan = buildPlan(s, p.input.withBedtimeOverride(_bedtimeOverride));
+    }
+    notifyListeners();
+  }
+
+  /// Minutes of heads-up before a block ends.
+  int get headsUpMinutes => _headsUpMinutes;
+  void setHeadsUpMinutes(int m) {
+    _headsUpMinutes = m;
+    notifyListeners();
+  }
+
+  /// Notification sound name.
+  String get sound => _sound;
+  void setSound(String name) {
+    _sound = name;
     notifyListeners();
   }
 
