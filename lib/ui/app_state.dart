@@ -11,11 +11,8 @@ import '../engine/serialization.dart';
 import '../services/notifications.dart';
 import '../services/storage.dart';
 import '../services/reminder_plan.dart';
+import 'templates.dart';
 import 'theme.dart';
-
-/// Temporary built-in schedule until import, templates and onboarding land in
-/// step 6.
-const String kDemoScheduleAsset = 'assets/demo/sample.md';
 
 /// Test tools (the look switch, the onboarding entry in Settings) exist in
 /// debug and profile builds, never in release builds.
@@ -62,7 +59,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   DebugLook _debugLook = DebugLook.auto;
   Set<Cut> _dismissedCuts = {};
   bool _justBuilt = false;
-  String? _loadError;
+  bool _onboarding = false;
   String _scheduleName = 'sample.md';
   DateTime? _scheduleSince;
   List<ScheduleError> _fileErrors = const [];
@@ -73,7 +70,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Schedule? get schedule => _schedule;
   Plan? get plan => _plan;
   DateTime get now => _now;
-  String? get loadError => _loadError;
+
+  /// First launch: onboarding shows until it is finished, even after a
+  /// template or pasted schedule is chosen in its second step.
+  bool get onboarding => _onboarding;
+
+  void finishOnboarding() {
+    if (!_onboarding || _schedule == null) return;
+    _onboarding = false;
+    notifyListeners();
+  }
 
   /// File name of the running schedule.
   String get scheduleName => _scheduleName;
@@ -113,12 +119,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       }
     }
     _scheduleSince ??= _clock();
-    if (_schedule == null) {
-      final text = await rootBundle.loadString(kDemoScheduleAsset);
-      final result = parseSchedule(text);
-      _schedule = result.schedule;
-      _loadError = result.errors.isEmpty ? null : result.errors.first.message;
-    }
+    // No schedule yet: first launch, so onboarding leads.
+    _onboarding = _schedule == null;
 
     final day = await _storage.loadDay();
     final schedule = _schedule;
@@ -303,7 +305,6 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     _scheduleName = name;
     _scheduleSince = _clock();
     _fileErrors = const [];
-    _loadError = null;
     final p = _plan;
     if (p != null && checkedIn) {
       _plan = buildPlan(
@@ -320,8 +321,22 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
+  /// Starts from one of the bundled templates.
+  Future<void> useTemplate(StarterTemplate t) async {
+    final text = await rootBundle.loadString(t.asset);
+    final result = parseSchedule(text);
+    if (result.isValid) useSchedule(result.schedule!, name: t.fileName, text: text);
+  }
+
+  /// An imported file didn't parse: the schedule file screen shows why while
+  /// the current schedule keeps running.
+  void reportFileErrors(List<ScheduleError> errors) {
+    _fileErrors = List.unmodifiable(errors);
+    notifyListeners();
+  }
+
   // ---------------------------------------------------------------------------
-  // Settings (in memory until step 5)
+  // Settings
 
   /// Local bedtime override. Null uses the file's bedtime.
   ClockTime? get bedtimeOverride => _bedtimeOverride;

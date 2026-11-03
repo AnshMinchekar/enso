@@ -14,6 +14,7 @@ import '../widgets/common.dart';
 import '../widgets/timeline.dart';
 import 'block_sheet.dart';
 import 'check_in_screen.dart';
+import 'onboarding_screen.dart';
 import 'settings_screen.dart';
 
 /// Hero tag shared by "Check in", "Build my day" and the hero card.
@@ -32,7 +33,10 @@ class TodayScreen extends StatelessWidget {
     final state = AppScope.of(context);
     final Widget body;
     final String key;
-    if (state.isWindDown) {
+    if (state.onboarding) {
+      body = const OnboardingScreen(asHome: true);
+      key = 'onboarding';
+    } else if (state.isWindDown) {
       body = const _WindDown();
       key = 'wind-down';
     } else if (!state.checkedIn || state.plan == null) {
@@ -646,14 +650,6 @@ class _BeforeCheckIn extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: Space.md),
               child: RemindersOffBanner(),
-            ),
-          if (state.loadError != null)
-            Glass(
-              tone: GlassTone.sunk,
-              radius: Radii.small,
-              margin: const EdgeInsets.symmetric(horizontal: Space.md),
-              padding: const EdgeInsets.all(20),
-              child: Text(state.loadError!, style: EnsoType.bodySmall.copyWith(color: p.ink)),
             ),
           Padding(
             padding: EdgeInsets.fromLTRB(Space.md, Space.md, Space.md, Space.bottomInset(context)),
