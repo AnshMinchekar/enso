@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../../engine/models.dart';
@@ -104,9 +103,9 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (kDebugMode) ...[
+                if (kDevTools) ...[
                   const SizedBox(height: 12),
-                  const GroupLabel('Debug build only', top: 20),
+                  const GroupLabel('Test builds only', top: 20),
                   const SizedBox(height: 12),
                   RowGroup(
                     children: [
@@ -234,6 +233,7 @@ class _SheetShell extends StatelessWidget {
     final p = EnsoPalette.of(context);
     return Glass(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+      live: true,
       shadows: Elevation.sheet(p),
       padding: EdgeInsets.fromLTRB(24, 12, 24, Space.bottomInset(context) - 8),
       child: Column(

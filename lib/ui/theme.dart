@@ -56,6 +56,10 @@ class Backdrops {
   static const String afternoon = 'assets/backgrounds/afternoon.webp';
   static const String evening = 'assets/backgrounds/evening.webp';
 
+  /// Pre-blurred artwork for glass panels: CSS blur(24px) saturate(1.3),
+  /// with the morning wash baked in.
+  static String glass(Ambience a) => 'assets/backgrounds/${a.name}_glass.webp';
+
   static String asset(Ambience a) => switch (a) {
     Ambience.morning => morning,
     Ambience.afternoon => afternoon,

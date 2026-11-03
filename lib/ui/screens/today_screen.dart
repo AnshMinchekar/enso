@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../../engine/models.dart';
@@ -69,7 +68,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
     final p = EnsoPalette.of(context);
-    final debug = kDebugMode && state.debugLook != DebugLook.auto;
+    final debug = kDevTools && state.debugLook != DebugLook.auto;
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 8, 12, 0),
       child: Row(
@@ -77,7 +76,7 @@ class _Header extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onLongPress: kDebugMode ? state.cycleDebugLook : null,
+              onLongPress: kDevTools ? state.cycleDebugLook : null,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -254,6 +253,7 @@ class RunningLateSheet extends StatelessWidget {
 
     return Glass(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+      live: true,
       shadows: Elevation.sheet(p),
       padding: EdgeInsets.fromLTRB(24, 12, 24, Space.bottomInset(context) - 8),
       child: Column(
@@ -691,7 +691,7 @@ class _WindDown extends StatelessWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPress: kDebugMode ? state.cycleDebugLook : null,
+      onLongPress: kDevTools ? state.cycleDebugLook : null,
       child: SafeArea(
         bottom: false,
         child: Column(

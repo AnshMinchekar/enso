@@ -60,19 +60,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: SafeArea(
         bottom: false,
         child: AnimatedSwitcher(
-          duration: Motion.checkInDuration,
-          reverseDuration: const Duration(milliseconds: 200),
-          switchInCurve: Motion.checkIn,
-          switchOutCurve: Curves.easeOut,
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: AnimatedBuilder(
+          // The step that is leaving lifts away and fades quickly; the next
+          // one rises 48 dp into place on the check-in spring as it fades in.
+          duration: const Duration(milliseconds: 560),
+          reverseDuration: const Duration(milliseconds: 240),
+          switchInCurve: Curves.linear,
+          switchOutCurve: Curves.linear,
+          transitionBuilder: (child, animation) {
+            final incoming = child.key == ValueKey(_step);
+            return AnimatedBuilder(
               animation: animation,
               child: child,
-              builder: (context, child) =>
-                  Transform.translate(offset: Offset(0, 24 * (1 - animation.value)), child: child),
-            ),
-          ),
+              builder: (context, child) {
+                final v = animation.value;
+                if (incoming) {
+                  final t = Motion.checkIn.transform(((v - 0.25) / 0.75).clamp(0.0, 1.0));
+                  return Opacity(
+                    opacity: t.clamp(0.0, 1.0),
+                    child: Transform.translate(offset: Offset(0, 48 * (1 - t)), child: child),
+                  );
+                }
+                final out = Curves.easeIn.transform(1 - v);
+                return Opacity(
+                  opacity: 1 - out,
+                  child: Transform.translate(offset: Offset(0, -32 * out), child: child),
+                );
+              },
+            );
+          },
           layoutBuilder: (current, previous) =>
               Stack(fit: StackFit.expand, children: [...previous, ?current]),
           child: KeyedSubtree(key: ValueKey(_step), child: page),

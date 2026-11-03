@@ -172,6 +172,7 @@ class BlockSheet extends StatelessWidget {
       },
       child: Glass(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+        live: true,
         shadows: Elevation.sheet(p),
         child: Padding(
           padding: EdgeInsets.fromLTRB(
