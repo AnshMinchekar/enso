@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"><style>body{margin:0;background:#E7E3DC}a{color:#4A644E}a:hover{color:#2F4433}</style></helmet>
+<div style="--bg:light-dark(#F5F2EC,#1B1A18);--surface:{{surface}};--sunk:{{sunk}};--blur:{{blur}};--ink:light-dark(#2A2825,#EEEAE3);--ink2:{{ink2}};--ink3:light-dark(#8E887F,#78726A);--line:light-dark(#E2DDD4,#34322E);--sh:light-dark(rgba(70,55,40,.06),rgba(0,0,0,.3));--scrim:{{scrim}};--night:{{nightC}};--night-card:{{nightCard}};--notif:light-dark(rgba(252,250,246,.88),rgba(46,44,40,.88));--wall:{{wall}};--wall-hi:{{wallHi}};--accent:{{acc.accent}};--accent-soft:{{accSoft}};--accent-ink:{{acc.ink}};--on-accent:{{acc.on}};--t-focus:{{tints.focus}};--d-focus:light-dark(#7A89A2,#94A3BB);--t-body:{{tints.body}};--d-body:light-dark(#B68767,#C99E80);--t-food:{{tints.food}};--d-food:light-dark(#B19A5F,#C8B27A);--t-rest:{{tints.rest}};--d-rest:light-dark(#958AA3,#ADA2BA);--t-leisure:{{tints.leisure}};--d-leisure:light-dark(#B37F7F,#C99999);--t-errand:{{tints.errand}};--d-errand:light-dark(#8E887F,#8A847B);font-family:'Manrope',system-ui,sans-serif;color:#2A2825;padding:80px 80px 160px;display:flex;flex-direction:column;gap:112px;width:max-content">
+
+<header style="display:flex;flex-direction:column;gap:16px;max-width:820px">
+<div style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B665E">Enso · Android · v1 mockups</div>
+<h1 style="margin:0;font-size:64px;font-weight:300;letter-spacing:-.025em;line-height:1.04">A quiet day, built from one input.</h1>
+<p style="margin:0;font-size:18px;line-height:1.55;color:#6B665E;text-wrap:pretty">Every screen at 412 × 915 dp, morning, afternoon and evening side by side. Sample day: woke 06:05, Gym + Cook, one errand, lights out 22:30. Manrope stands in for Inter (humanist, light weights, tabular figures). Dusk blue is the only accent and only marks “now” and the primary action. Swap it for sage in Tweaks.</p>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">01</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Onboarding</h2><span style="font-size:16px;color:#6B665E">Welcome, pick a starting point, grant permissions.</span></div>
+<div style="display:flex;flex-direction:column;gap:64px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="display:flex;gap:56px">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:02</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 32px 40px;gap:24px">
+<div style="width:64px;height:64px;border-radius:20px;background:var(--accent-soft);display:grid;place-items:center"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="13" style="stroke:var(--accent);opacity:.25" stroke-width="2.5"></circle><circle cx="18" cy="18" r="13" style="stroke:var(--accent)" stroke-width="2.5" stroke-dasharray="52 82" stroke-linecap="round" transform="rotate(-90 18 18)"></circle></svg></div>
+<div style="font-size:42px;font-weight:300;letter-spacing:-.025em;line-height:1.12;text-wrap:pretty">Your whole day, built from the moment you wake.</div>
+<div style="font-size:17px;line-height:1.55;color:var(--ink2);text-wrap:pretty">Tell Enso when you got up. It lays out the rest and lets you know when it’s time to switch.</div>
+</div>
+<div style="display:flex;gap:6px;padding:0 32px"><span style="width:24px;height:6px;border-radius:3px;background:var(--accent)"></span><span style="width:6px;height:6px;border-radius:3px;background:var(--sunk)"></span><span style="width:6px;height:6px;border-radius:3px;background:var(--sunk)"></span></div>
+<div style="margin:28px 16px 48px;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Get started</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:02</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="display:flex;gap:6px;padding:24px 32px 0"><span style="width:6px;height:6px;border-radius:3px;background:var(--sunk)"></span><span style="width:24px;height:6px;border-radius:3px;background:var(--accent)"></span><span style="width:6px;height:6px;border-radius:3px;background:var(--sunk)"></span></div>
+<div style="padding:32px 32px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.15">Start from a template</div><div style="font-size:16px;line-height:1.5;color:var(--ink2)">Every block and rule can be changed later in the file.</div></div>
+<div style="padding:32px 16px 0;display:flex;flex-direction:column;gap:12px">
+<div style="padding:20px 24px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:500">Student</span><span style="font-size:14px;color:var(--ink2)">Lectures, study blocks, a later start</span></div><span style="width:22px;height:22px;border-radius:11px;box-shadow:inset 0 0 0 1.5px var(--ink3)"></span></div>
+<div style="padding:20px 24px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:500">9 to 5</span><span style="font-size:14px;color:var(--ink2)">Commute, work hours, evenings free</span></div><span style="width:22px;height:22px;border-radius:11px;box-shadow:inset 0 0 0 1.5px var(--ink3)"></span></div>
+<div style="padding:20px 24px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px;box-shadow:0 0 0 1.5px var(--accent)"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:500">Gym-focused</span><span style="font-size:14px;color:var(--ink2)">Training first, meals around it, early nights</span></div><span style="width:22px;height:22px;border-radius:11px;box-shadow:inset 0 0 0 1.5px var(--accent);display:grid;place-items:center"><span style="width:12px;height:12px;border-radius:6px;background:var(--accent)"></span></span></div>
+<div style="padding:16px 0 4px;text-align:center;font-size:13px;color:var(--ink3)">or</div>
+<div style="padding:18px 24px;border-radius:24px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:500">Import a schedule file</span><span style="font-size:13px;color:var(--ink2)">A Markdown file on this phone</span></div></div>
+<div style="padding:18px 24px;border-radius:24px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 17h-8l-4.5 3.5V17H5a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 5 5z"></path></svg><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:500">Make one with AI</span><span style="font-size:13px;line-height:1.4;color:var(--ink2);text-wrap:pretty">Describe your day to any AI assistant, paste the result back</span></div></div>
+</div>
+<div style="margin:auto 16px 48px;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Continue</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:03</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="display:flex;gap:6px;padding:24px 32px 0"><span style="width:6px;height:6px;border-radius:3px;background:var(--sunk)"></span><span style="width:6px;height:6px;border-radius:3px;background:var(--sunk)"></span><span style="width:24px;height:6px;border-radius:3px;background:var(--accent)"></span></div>
+<div style="padding:32px 32px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.15">Two small permissions</div><div style="font-size:16px;line-height:1.5;color:var(--ink2);text-wrap:pretty">So reminders arrive on time, even when the app is closed.</div></div>
+<div style="padding:32px 16px 0;display:flex;flex-direction:column;gap:12px">
+<div style="padding:24px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;gap:16px"><span style="width:44px;height:44px;flex:none;border-radius:22px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20.5a2 2 0 0 0 4 0"></path></svg></span><div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:500">Notifications</span><span style="font-size:15px;line-height:1.5;color:var(--ink2);text-wrap:pretty">To tell you when a block ends and what comes next.</span></div></div>
+<div style="padding:24px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;gap:16px"><span style="width:44px;height:44px;flex:none;border-radius:22px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg></span><div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:500">Exact alarms</span><span style="font-size:15px;line-height:1.5;color:var(--ink2);text-wrap:pretty">So a 12:30 reminder arrives at 12:30, not a few minutes later.</span></div></div>
+<div style="padding:12px 8px 0;font-size:14px;line-height:1.5;color:var(--ink2)">Nothing leaves your phone. No account, no server.</div>
+</div>
+<div style="margin:auto 16px 0;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Allow</div>
+<div style="margin:4px 16px 36px;height:48px;flex:none;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink2)">Not now</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">02</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Morning check-in</h2><span style="font-size:16px;color:#6B665E">First open of the day. Wake time is prefilled with now.</span></div>
+<div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:07</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Monday, 26 October</span><span style="font-size:32px;font-weight:300;letter-spacing:-.02em">You woke up at</span></div>
+<div style="margin:20px 16px 0;height:232px;border-radius:28px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);position:relative;overflow:hidden;font-variant-numeric:tabular-nums">
+<div style="position:absolute;left:16px;right:16px;top:80px;height:72px;border-radius:20px;background:var(--sunk)"></div>
+<div style="position:relative;height:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center">
+<div style="display:flex;flex-direction:column;align-items:flex-end;padding-right:12px"><span style="height:36px;line-height:36px;font-size:24px;font-weight:300;opacity:.2">04</span><span style="height:44px;line-height:44px;font-size:32px;font-weight:300;opacity:.45">05</span><span style="height:72px;line-height:72px;font-size:60px;font-weight:300;letter-spacing:-.02em">06</span><span style="height:44px;line-height:44px;font-size:32px;font-weight:300;opacity:.45">07</span><span style="height:36px;line-height:36px;font-size:24px;font-weight:300;opacity:.2">08</span></div>
+<span style="font-size:52px;font-weight:200;color:var(--ink2);margin-top:-6px">:</span>
+<div style="display:flex;flex-direction:column;align-items:flex-start;padding-left:12px"><span style="height:36px;line-height:36px;font-size:24px;font-weight:300;opacity:.2">55</span><span style="height:44px;line-height:44px;font-size:32px;font-weight:300;opacity:.45">00</span><span style="height:72px;line-height:72px;font-size:60px;font-weight:300;letter-spacing:-.02em">05</span><span style="height:44px;line-height:44px;font-size:32px;font-weight:300;opacity:.45">10</span><span style="height:36px;line-height:36px;font-size:24px;font-weight:300;opacity:.2">15</span></div>
+</div>
+</div>
+<div style="margin:12px 24px 0;display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums"><span>Set to now, scroll to adjust</span><span>16h 25 until lights out</span></div>
+<div style="margin:32px 24px 12px;font-size:13px;font-weight:600;color:var(--ink2)">Today is a</div>
+<div style="padding:0 24px;display:flex;flex-wrap:wrap;gap:8px">
+<span style="height:48px;padding:0 20px 0 16px;border-radius:24px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Gym</span>
+<span style="height:48px;padding:0 20px 0 16px;border-radius:24px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Cook</span>
+<span style="height:48px;padding:0 20px;border-radius:24px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;font-size:15px;font-weight:600">Rest</span>
+</div>
+<div style="margin:32px 24px 12px;font-size:13px;font-weight:600;color:var(--ink2)">Errands</div>
+<div style="margin:0 16px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column;padding:4px 0">
+<div style="height:56px;padding:0 12px 0 20px;display:flex;align-items:center;gap:12px"><span style="flex:1;font-size:16px;font-weight:500">Haircut</span><span style="font-size:15px;color:var(--ink2);font-variant-numeric:tabular-nums">60 min</span><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--ink3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"></path></svg></span></div>
+<div style="height:56px;padding:0 20px;display:flex;align-items:center;gap:12px;color:var(--ink2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span style="font-size:16px;font-weight:500">Add errand</span></div>
+</div>
+<div style="margin:auto 16px 48px;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Build my day</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">03</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Today</h2><span style="font-size:16px;color:#6B665E">The main screen, in four states.</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:72px 96px;max-width:1900px">
+
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Normal day · 10:52</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>10:52</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="padding:8px 12px 0 24px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Monday, 26 October</span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Today</span></div><span style="width:48px;height:48px;display:grid;place-items:center;color:var(--ink2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></span></div>
+<div style="margin:16px 16px 0;padding:24px;border-radius:28px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:0 1px 2px var(--sh),0 12px 32px var(--sh);display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+<div style="display:flex;flex-direction:column;gap:8px;min-width:0"><div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink)"><span style="width:6px;height:6px;border-radius:3px;background:var(--accent)"></span>Now</div><div style="font-size:36px;font-weight:300;letter-spacing:-.025em;line-height:1.1">Career block</div><div style="font-size:16px;color:var(--ink2)">Applications + portfolio</div></div>
+<div style="position:relative;width:96px;height:96px;flex:none"><svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" style="stroke:var(--sunk)" stroke-width="4"></circle><circle cx="48" cy="48" r="42" fill="none" style="stroke:var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="108 264" transform="rotate(-90 48 48)"></circle></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-variant-numeric:tabular-nums"><span style="font-size:20px;font-weight:400;letter-spacing:-.01em">1h 38</span><span style="font-size:12px;color:var(--ink2)">left</span></div></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums"><span>09:45 – 12:30</span><span>Focus</span></div>
+</div>
+<div style="margin:12px 16px 0;padding:16px 20px;border-radius:20px;background:var(--t-food);display:flex;align-items:center;gap:16px"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;color:var(--ink2)">Up next</span><span style="font-size:17px;font-weight:500">Cook &amp; lunch</span></div><span style="font-size:17px;color:var(--ink2);font-variant-numeric:tabular-nums">12:30</span></div>
+<div style="margin:24px 12px 4px 24px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Your day</span><span style="height:44px;padding:0 12px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>Running late?</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;position:relative;padding:0 16px;-webkit-mask-image:linear-gradient(#000 65%,transparent);mask-image:linear-gradient(#000 65%,transparent)">
+<div style="position:absolute;left:101px;top:0;bottom:0;width:1px;background:var(--line)"></div>
+<sc-for list="{{todayList}}" as="r" hint-placeholder-count="6">
+<div style="position:relative;display:grid;grid-template-columns:52px 20px 1fr;gap:12px;align-items:center;padding:12px;border-radius:16px;background:{{r.bg}};opacity:{{r.op}}"><span style="font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums">{{r.t}}</span><span style="justify-self:center;width:{{r.ds}}px;height:{{r.ds}}px;border-radius:50%;background:{{r.dot}}"></span><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:{{r.w}}">{{r.name}}</span><span style="font-size:13px;color:var(--ink2)">{{r.detail}}</span></div></div>
+</sc-for>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Late start, shortened day · 09:12</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>09:12</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="padding:8px 12px 0 24px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Monday, 26 October</span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Today</span></div><span style="width:48px;height:48px;display:grid;place-items:center;color:var(--ink2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></span></div>
+<div style="margin:16px 16px 0;padding:24px;border-radius:28px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:0 1px 2px var(--sh),0 12px 32px var(--sh);display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+<div style="display:flex;flex-direction:column;gap:8px;min-width:0"><div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink)"><span style="width:6px;height:6px;border-radius:3px;background:var(--accent)"></span>Now</div><div style="font-size:36px;font-weight:300;letter-spacing:-.025em;line-height:1.1">Gym</div><div style="font-size:16px;color:var(--ink2)">Push day · upper body</div></div>
+<div style="position:relative;width:96px;height:96px;flex:none"><svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" style="stroke:var(--sunk)" stroke-width="4"></circle><circle cx="48" cy="48" r="42" fill="none" style="stroke:var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="131 264" transform="rotate(-90 48 48)"></circle></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-variant-numeric:tabular-nums"><span style="font-size:20px;font-weight:400;letter-spacing:-.01em">53 min</span><span style="font-size:12px;color:var(--ink2)">left</span></div></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums"><span>08:20 – 10:05</span><span>Body</span></div>
+</div>
+<div style="margin:12px 16px 0;padding:16px 20px;border-radius:20px;background:var(--t-rest);display:flex;align-items:center;gap:16px"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;color:var(--ink2)">Up next</span><span style="font-size:17px;font-weight:500">Shower &amp; snack</span></div><span style="font-size:17px;color:var(--ink2);font-variant-numeric:tabular-nums">10:05</span></div>
+<div style="margin:12px 16px 0;padding:16px 8px 16px 20px;border-radius:20px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:flex-start;gap:8px"><span style="flex:1;font-size:15px;line-height:1.45;font-weight:500;text-wrap:pretty;padding-top:2px">You started at 07:40, so two blocks are a little shorter today.</span><span style="width:40px;height:40px;flex:none;margin-top:-8px;display:grid;place-items:center;color:var(--ink3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"></path></svg></span></div>
+<div style="display:flex;justify-content:space-between;padding-right:12px;font-size:14px;font-variant-numeric:tabular-nums"><span>Coding</span><span style="color:var(--ink2)">2h 15 → 1h 15</span></div>
+<div style="display:flex;justify-content:space-between;padding-right:12px;font-size:14px;font-variant-numeric:tabular-nums"><span>Gaming</span><span style="color:var(--ink2)">1h 30 → 1h</span></div>
+</div>
+<div style="margin:20px 12px 4px 24px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Your day</span><span style="height:44px;padding:0 12px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>Running late?</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;position:relative;padding:0 16px;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)">
+<div style="position:absolute;left:101px;top:0;bottom:0;width:1px;background:var(--line)"></div>
+<sc-for list="{{shortList}}" as="r" hint-placeholder-count="4">
+<div style="position:relative;display:grid;grid-template-columns:52px 20px 1fr;gap:12px;align-items:center;padding:12px;border-radius:16px;background:{{r.bg}};opacity:{{r.op}}"><span style="font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums">{{r.t}}</span><span style="justify-self:center;width:{{r.ds}}px;height:{{r.ds}}px;border-radius:50%;background:{{r.dot}}"></span><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:{{r.w}}">{{r.name}}</span><span style="font-size:13px;color:var(--ink2)">{{r.detail}}</span></div></div>
+</sc-for>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Wind down · 22:10</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:var(--night);color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.7"><span>22:10</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 40px;gap:28px">
+<span style="color:var(--ink2)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"></path></svg></span>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:16px;color:var(--ink2)">Lights out at</span><span style="font-size:104px;font-weight:200;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums">22:30</span><span style="font-size:18px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Twenty quiet minutes left. The day is done.</span></div>
+</div>
+<div style="margin:0 16px 56px;padding:20px 24px;border-radius:24px;background:var(--night-card);display:flex;justify-content:space-between;align-items:center"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Tomorrow</span><span style="font-size:17px;font-weight:500">Wake around 06:00</span></div><span style="font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums">7h 30 of sleep</span></div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.2"></div>
+</div>
+</sc-for>
+</div></div>
+
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Before check-in, reminders off</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>{{m.time}}</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="padding:8px 12px 0 24px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Monday, 26 October</span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Today</span></div><span style="width:48px;height:48px;display:grid;place-items:center;color:var(--ink2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></span></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px;gap:12px"><span style="font-size:48px;font-weight:300;letter-spacing:-.03em;line-height:1.08">{{m.greet}}</span><span style="font-size:24px;font-weight:300;letter-spacing:-.01em;color:var(--ink2)">When did you wake up?</span></div>
+<div style="margin:0 16px;padding:16px 8px 16px 20px;border-radius:20px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;gap:14px;align-items:center"><span style="color:var(--ink2);display:flex"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20.5a2 2 0 0 0 4 0"></path></svg></span><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Reminders are off</span><span style="font-size:13px;line-height:1.4;color:var(--ink2)">You’ll only see changes while the app is open.</span></div><span style="height:44px;padding:0 12px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--accent-ink)">Turn on</span></div>
+<div style="margin:16px 16px 48px;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Check in</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">04</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Block sheet</h2><span style="font-size:16px;color:#6B665E">The tapped card expands into this sheet. The day behind it re-plans live.</span></div>
+<div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>10:52</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="padding:8px 24px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:600;color:var(--ink2)">Monday, 26 October</span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Today</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;position:relative;padding:0 16px">
+<div style="position:absolute;left:101px;top:0;bottom:0;width:1px;background:var(--line)"></div>
+<sc-for list="{{sheetList}}" as="r" hint-placeholder-count="6">
+<div style="position:relative;display:grid;grid-template-columns:52px 20px 1fr;gap:12px;align-items:center;padding:12px;border-radius:16px;background:{{r.bg}};opacity:{{r.op}}"><span style="font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums">{{r.t}}</span><span style="justify-self:center;width:{{r.ds}}px;height:{{r.ds}}px;border-radius:50%;background:{{r.dot}}"></span><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:{{r.w}}">{{r.name}}</span><span style="font-size:13px;color:var(--ink2)">{{r.detail}}</span></div></div>
+</sc-for>
+</div>
+<div style="position:absolute;inset:0;background:var(--scrim)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 24px 40px;border-radius:32px 32px 0 0;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:0 -12px 40px var(--sh);display:flex;flex-direction:column;gap:24px">
+<span style="align-self:center;width:36px;height:4px;border-radius:2px;background:var(--ink3);opacity:.5"></span>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink)"><span style="width:6px;height:6px;border-radius:3px;background:var(--accent)"></span>Now · Focus</div><div style="font-size:38px;font-weight:300;letter-spacing:-.025em;line-height:1.1">Career block</div><div style="font-size:16px;color:var(--ink2);font-variant-numeric:tabular-nums">09:45 – 12:30 · 2h 45</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="height:6px;border-radius:3px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);overflow:hidden"><div style="width:41%;height:100%;border-radius:3px;background:var(--accent)"></div></div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums"><span>1h 07 in</span><span>1h 38 left</span></div></div>
+<div style="padding:4px 20px;border-radius:20px;background:var(--t-focus);display:flex;flex-direction:column">
+<div style="padding:12px 0;display:flex;justify-content:space-between;gap:16px;font-size:15px"><span style="color:var(--ink2)">Today</span><span style="font-weight:500">Applications + portfolio</span></div>
+<div style="padding:12px 0;display:flex;justify-content:space-between;gap:16px;font-size:15px;font-variant-numeric:tabular-nums"><span style="color:var(--ink2)">Can shrink to</span><span style="font-weight:500">1h 30</span></div>
+<div style="padding:12px 0;display:flex;justify-content:space-between;gap:16px;font-size:15px"><span style="color:var(--ink2)">Comes after</span><span style="font-weight:500">Shower &amp; snack</span></div>
+</div>
+<div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;color:var(--ink2)"><span style="display:flex;padding-top:1px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg></span><span style="text-wrap:pretty">With +15 min, lunch moves to 12:45 and the walk becomes 15 min.</span></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">+15 min</span><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:16px;font-weight:600">Skip</span></div>
+<span style="height:60px;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Done</span>
+</div>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">05</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Notifications</h2><span style="font-size:16px;color:#6B665E">Block change with Start and +10 min. The 5-minute heads-up sits below, already read.</span></div>
+<div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:radial-gradient(130% 70% at 20% 0%,var(--wall-hi),var(--wall));color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:flex-end;font-size:14px;font-weight:600"><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="padding:56px 32px 0;display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:500;color:var(--ink2)">Monday 26 October</span><span style="font-size:112px;font-weight:200;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums">09:45</span></div>
+<div style="padding:56px 12px 0;display:flex;flex-direction:column;gap:8px">
+<div style="padding:18px 20px 12px;border-radius:24px;background:var(--notif);backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink2)"><span style="width:18px;height:18px;border-radius:6px;background:var(--accent);display:grid;place-items:center"><span style="width:8px;height:8px;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--on-accent)"></span></span>Enso · now</div>
+<span style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">Career block, until 12:30</span>
+<span style="font-size:15px;color:var(--ink2)">Next, Lunch.</span>
+<div style="display:flex;gap:8px;margin-top:8px"><span style="height:44px;padding:0 20px;display:flex;align-items:center;border-radius:22px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);font-size:14px;font-weight:600">Start</span><span style="height:44px;padding:0 20px;display:flex;align-items:center;border-radius:22px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">+10 min</span></div>
+</div>
+<div style="padding:14px 20px;border-radius:24px;background:var(--notif);backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:4px;opacity:.85">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums"><span style="width:18px;height:18px;border-radius:6px;background:var(--accent);display:grid;place-items:center"><span style="width:8px;height:8px;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--on-accent)"></span></span>Enso · 09:10</div>
+<span style="font-size:14px;color:var(--ink2)">5 minutes left in Gym. Shower &amp; snack next.</span>
+</div>
+</div>
+<div style="margin-top:auto;padding-bottom:48px;text-align:center;font-size:13px;font-weight:500;color:var(--ink2)">Swipe up to open</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">06</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Schedule file</h2><span style="font-size:16px;color:#6B665E">Shown with a file error. The previous schedule keeps running.</span></div>
+<div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>10:58</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Schedule file</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:8px 16px 0;display:flex;flex-direction:column;gap:12px;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)">
+<div style="padding:20px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;flex:none;border-radius:16px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:500">ansh-routine.md</span><span style="font-size:13px;color:var(--ink2)">Running since 24 Oct · 8 blocks · 4 rules</span></div></div>
+<div style="padding:20px;border-radius:24px;background:var(--t-food);display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-variant-numeric:tabular-nums">New version · line 42</span>
+<span style="font-size:16px;line-height:1.45;font-weight:500;text-wrap:pretty">Lunch says after Cook, but there’s no block called Cook.</span>
+<span style="font-size:14px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Did you mean Cook &amp; lunch? Your previous schedule keeps running until this is fixed.</span>
+</div>
+<div style="padding:12px 8px 0;font-size:13px;font-weight:600;color:var(--ink2)">Blocks</div>
+<div style="padding:4px 0;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<sc-for list="{{fileBlocks}}" as="b" hint-placeholder-count="8">
+<div style="padding:12px 20px;display:flex;align-items:center;gap:14px"><span style="width:8px;height:8px;flex:none;border-radius:4px;background:{{b.dot}}"></span><span style="flex:1;font-size:15px;font-weight:500">{{b.name}}</span><span style="font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums">{{b.len}}</span></div>
+</sc-for>
+</div>
+<div style="padding:12px 8px 0;font-size:13px;font-weight:600;color:var(--ink2)">Rules</div>
+<div style="padding:8px 0;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<sc-for list="{{rules}}" as="x" hint-placeholder-count="4">
+<div style="padding:10px 20px;font-size:15px;line-height:1.45;text-wrap:pretty">{{x}}</div>
+</sc-for>
+</div>
+</div>
+<div style="margin:12px 16px 48px;flex:none;display:flex;flex-direction:column;gap:12px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Paste from clipboard</span><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Make one with AI</span></div><div style="margin:0;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Import file</div></div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">07</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Make one with AI</h2><span style="font-size:16px;color:#6B665E">Opened from onboarding or the schedule file. Enso only copies and pastes text.</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:72px 96px;max-width:1900px">
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Sheet</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:03</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Schedule file</span></div>
+<div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:12px"><div style="padding:20px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;flex:none;border-radius:16px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:500">ansh-routine.md</span><span style="font-size:13px;color:var(--ink2)">Running since 24 Oct · 8 blocks · 4 rules</span></div></div></div>
+<div style="margin-top:auto"><div style="margin:12px 16px 48px;flex:none;display:flex;flex-direction:column;gap:12px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Paste from clipboard</span><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Make one with AI</span></div><div style="margin:0;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Import file</div></div></div>
+<div style="position:absolute;inset:0;background:var(--scrim)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 24px 40px;border-radius:32px 32px 0 0;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:0 -12px 40px var(--sh);display:flex;flex-direction:column;gap:24px">
+<span style="align-self:center;width:36px;height:4px;border-radius:2px;background:var(--ink3);opacity:.5"></span>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.15">Make one with AI</div><div style="font-size:15px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Use any assistant you like. Enso never sends anything itself.</div></div>
+<div style="padding:4px 20px;border-radius:20px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<div style="padding:14px 0;display:flex;gap:16px;align-items:flex-start"><span style="width:28px;height:28px;flex:none;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums">1</span><div style="display:flex;flex-direction:column;gap:2px;padding-top:3px"><span style="font-size:16px;font-weight:500">Copy the prompt</span><span style="font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:pretty">It explains how an Enso schedule is written.</span></div></div>
+<div style="padding:14px 0;display:flex;gap:16px;align-items:flex-start"><span style="width:28px;height:28px;flex:none;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums">2</span><div style="display:flex;flex-direction:column;gap:2px;padding-top:3px"><span style="font-size:16px;font-weight:500">Paste it into any AI assistant</span><span style="font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:pretty">Then describe your day in your own words.</span></div></div>
+<div style="padding:14px 0;display:flex;gap:16px;align-items:flex-start"><span style="width:28px;height:28px;flex:none;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums">3</span><div style="display:flex;flex-direction:column;gap:2px;padding-top:3px"><span style="font-size:16px;font-weight:500">Copy the answer back</span><span style="font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:pretty">Return here and tap Paste schedule.</span></div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Paste schedule</span>
+<span style="height:60px;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Copy prompt</span>
+</div>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">After Copy prompt · returns to “Copy prompt” after 2 s</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:03</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Schedule file</span></div>
+<div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:12px"><div style="padding:20px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;flex:none;border-radius:16px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:500">ansh-routine.md</span><span style="font-size:13px;color:var(--ink2)">Running since 24 Oct · 8 blocks · 4 rules</span></div></div></div>
+<div style="margin-top:auto"><div style="margin:12px 16px 48px;flex:none;display:flex;flex-direction:column;gap:12px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Paste from clipboard</span><span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Make one with AI</span></div><div style="margin:0;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Import file</div></div></div>
+<div style="position:absolute;inset:0;background:var(--scrim)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 24px 40px;border-radius:32px 32px 0 0;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:0 -12px 40px var(--sh);display:flex;flex-direction:column;gap:24px">
+<span style="align-self:center;width:36px;height:4px;border-radius:2px;background:var(--ink3);opacity:.5"></span>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.15">Make one with AI</div><div style="font-size:15px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Use any assistant you like. Enso never sends anything itself.</div></div>
+<div style="padding:4px 20px;border-radius:20px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<div style="padding:14px 0;display:flex;gap:16px;align-items:flex-start"><span style="width:28px;height:28px;flex:none;border-radius:14px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><div style="display:flex;flex-direction:column;gap:2px;padding-top:3px"><span style="font-size:16px;font-weight:500">Copy the prompt</span><span style="font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:pretty">It explains how an Enso schedule is written.</span></div></div>
+<div style="padding:14px 0;display:flex;gap:16px;align-items:flex-start"><span style="width:28px;height:28px;flex:none;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums">2</span><div style="display:flex;flex-direction:column;gap:2px;padding-top:3px"><span style="font-size:16px;font-weight:500">Paste it into any AI assistant</span><span style="font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:pretty">Then describe your day in your own words.</span></div></div>
+<div style="padding:14px 0;display:flex;gap:16px;align-items:flex-start"><span style="width:28px;height:28px;flex:none;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums">3</span><div style="display:flex;flex-direction:column;gap:2px;padding-top:3px"><span style="font-size:16px;font-weight:500">Copy the answer back</span><span style="font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:pretty">Return here and tap Paste schedule.</span></div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<span style="height:56px;border-radius:28px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;font-size:15px;font-weight:600">Paste schedule</span>
+<span style="height:60px;border-radius:30px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;gap:8px;font-size:17px;font-weight:600"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Copied</span>
+</div>
+</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">08</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Paste result</h2><span style="font-size:16px;color:#6B665E">What Paste schedule shows. The current schedule keeps running until one is used.</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:72px 96px;max-width:1900px">
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Valid</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:09</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Pasted schedule</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:8px 16px 0;display:flex;flex-direction:column;gap:12px;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)">
+<div style="padding:20px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;flex:none;border-radius:16px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4.5" width="13" height="16" rx="2"></rect><path d="M9 3.5h6v3H9z"></path></svg></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:500">From your clipboard</span><span style="font-size:13px;color:var(--ink2)">8 blocks · 4 rules · ready to use</span></div></div>
+<div style="padding:12px 8px 0;font-size:13px;font-weight:600;color:var(--ink2)">Blocks</div>
+<div style="padding:4px 0;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<sc-for list="{{fileBlocks}}" as="b" hint-placeholder-count="8">
+<div style="padding:12px 20px;display:flex;align-items:center;gap:14px"><span style="width:8px;height:8px;flex:none;border-radius:4px;background:{{b.dot}}"></span><span style="flex:1;font-size:15px;font-weight:500">{{b.name}}</span><span style="font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums">{{b.len}}</span></div>
+</sc-for>
+</div>
+<div style="padding:12px 8px 0;font-size:13px;font-weight:600;color:var(--ink2)">Rules</div>
+<div style="padding:8px 0;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<sc-for list="{{rules}}" as="x" hint-placeholder-count="4">
+<div style="padding:10px 20px;font-size:15px;line-height:1.45;text-wrap:pretty">{{x}}</div>
+</sc-for>
+</div>
+</div>
+<div style="margin:12px 16px 0;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Use this schedule</div>
+<div style="margin:4px 16px 36px;height:48px;flex:none;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink2)">Cancel</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">No schedule found</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:09</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Pasted schedule</span></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 40px 40px;gap:20px">
+<span style="width:64px;height:64px;border-radius:32px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center;color:var(--ink2)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4.5" width="13" height="16" rx="2"></rect><path d="M9 3.5h6v3H9z"></path></svg></span>
+<div style="font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.15">No schedule found</div>
+<div style="font-size:16px;line-height:1.55;color:var(--ink2);text-wrap:pretty">The copied text has no Enso schedule in it. Copy the assistant’s whole answer, then try again.</div>
+</div>
+<div style="margin:0 16px;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Try again</div>
+<div style="margin:4px 16px 36px;height:48px;flex:none;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink2)">See the steps</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:20px"><div style="font-size:16px;font-weight:600">Errors</div><div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>06:09</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Pasted schedule</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:8px 16px 0;display:flex;flex-direction:column;gap:12px;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)">
+<div style="padding:20px;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;align-items:center;gap:16px"><span style="width:48px;height:48px;flex:none;border-radius:16px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4.5" width="13" height="16" rx="2"></rect><path d="M9 3.5h6v3H9z"></path></svg></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:500">From your clipboard</span><span style="font-size:13px;color:var(--ink2)">8 blocks · 3 lines need a fix</span></div></div>
+<div style="padding:20px;border-radius:24px;background:var(--t-food);display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-variant-numeric:tabular-nums">Line 14</span>
+<span style="font-size:16px;line-height:1.45;font-weight:500;text-wrap:pretty">Lunch says after Cook, but there’s no block called Cook.</span>
+<span style="font-size:14px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Did you mean Cook &amp; lunch?</span>
+</div>
+<div style="padding:20px;border-radius:24px;background:var(--t-food);display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-variant-numeric:tabular-nums">Line 23</span>
+<span style="font-size:16px;line-height:1.45;font-weight:500;text-wrap:pretty">There’s no block called Wlak.</span>
+<span style="font-size:14px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Did you mean Walk?</span>
+</div>
+<div style="padding:20px;border-radius:24px;background:var(--t-food);display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-variant-numeric:tabular-nums">Line 31</span>
+<span style="font-size:16px;line-height:1.45;font-weight:500;text-wrap:pretty">Bedtime is 2230, which isn’t a time.</span>
+<span style="font-size:14px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Did you mean 22:30?</span>
+</div>
+<div style="padding:8px 8px 0;font-size:14px;line-height:1.5;color:var(--ink2);text-wrap:pretty">Ask your assistant to fix these and paste again. Nothing changes until the schedule is valid.</div>
+</div>
+<div style="margin:12px 16px 0;height:60px;flex:none;border-radius:30px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:17px;font-weight:600">Paste again</div>
+<div style="margin:4px 16px 36px;height:48px;flex:none;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink2)">Cancel</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">09</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Settings</h2><span style="font-size:16px;color:#6B665E">Kept short.</span></div>
+<div style="display:flex;gap:56px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<div style="color-scheme:{{m.scheme}};width:412px;height:915px;flex:none;border-radius:44px;overflow:hidden;position:relative;background:{{m.bg}};color:var(--ink);display:flex;flex-direction:column;box-shadow:0 0 0 10px #161513,0 40px 80px -30px rgba(40,30,20,.4)">
+<div style="height:44px;flex:none;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums"><span>11:02</span><svg width="46" height="14" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 5.5a10 10 0 0 1 14 0M3.8 8.3a6 6 0 0 1 8.4 0"></path><circle cx="8" cy="11.2" r="1.1" fill="currentColor" stroke="none"></circle><rect x="22" y="2.5" width="19" height="9" rx="2.5"></rect><rect x="24" y="4.5" width="11" height="5" rx="1" fill="currentColor" stroke="none"></rect><path d="M43.5 6v2"></path></svg></div>
+<div style="height:64px;flex:none;padding:0 8px;display:flex;align-items:center;gap:4px"><span style="width:48px;height:48px;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:22px;font-weight:500;letter-spacing:-.01em">Settings</span></div>
+<div style="padding:16px 16px 0;display:flex;flex-direction:column;gap:12px">
+<div style="padding:0 8px;font-size:13px;font-weight:600;color:var(--ink2)">Day</div>
+<div style="padding:4px 0;border-radius:24px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:flex;flex-direction:column">
+<div style="min-height:60px;padding:0 12px 0 20px;display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:16px">Bedtime</span><span style="font-size:16px;color:var(--ink2);font-variant-numeric:tabular-nums">22:30</span><span style="width:28px;display:flex;justify-content:center;color:var(--ink3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"></path></svg></span></div>
+<div style="min-height:60px;padding:0 12px 0 20px;display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:16px">Heads-up before a block ends</span><span style="font-size:16px;color:var(--ink2);font-variant-numeric:tabular-nums">5 min</span><span style="width:28px;display:flex;justify-content:center;color:var(--ink3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"></path></svg></span></div>
+<div style="min-height:60px;padding:0 12px 0 20px;display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:16px">Notification sound</span><span style="font-size:16px;color:var(--ink2)">Soft chime</span><span style="width:28px;display:flex;justify-content:center;color:var(--ink3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"></path></svg></span></div>
+</div>
+<div style="padding:20px 8px 0;font-size:13px;font-weight:600;color:var(--ink2)">Theme</div>
+<div style="padding:4px;border-radius:24px;background:var(--sunk);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);display:grid;grid-template-columns:repeat(3,1fr);gap:4px"><span style="height:48px;border-radius:20px;background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:0 1px 3px var(--sh);display:grid;place-items:center;font-size:15px;font-weight:600">System</span><span style="height:48px;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink2)">Light</span><span style="height:48px;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink2)">Dark</span></div>
+<div style="padding:20px 8px 0;font-size:13px;font-weight:600;color:var(--ink2)">Schedule</div>
+<div style="padding:4px 0;border-radius:24px;background:var(--surface)">
+<div style="min-height:72px;padding:0 12px 0 20px;display:flex;align-items:center;gap:14px"><span style="display:flex;color:var(--ink2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:16px">Schedule file</span><span style="font-size:13px;color:var(--ink2)">ansh-routine.md</span></div><span style="width:28px;display:flex;justify-content:center;color:var(--ink3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"></path></svg></span></div>
+</div>
+</div>
+<div style="margin-top:auto;padding:0 32px 56px;text-align:center;font-size:13px;line-height:1.5;color:var(--ink2)">Everything runs on this phone. No account, no server.</div>
+<div style="position:absolute;left:50%;bottom:10px;width:108px;height:4px;margin-left:-54px;border-radius:2px;background:var(--ink);opacity:.3"></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">10</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Style sheet</h2><span style="font-size:16px;color:#6B665E">Values for the Flutter ThemeData and ThemeExtension.</span></div>
+<div style="display:grid;grid-template-columns:repeat(2,640px);gap:32px">
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:4px">
+<div style="display:grid;grid-template-columns:150px 1fr 1fr;gap:16px;padding-bottom:12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B665E"><span>Colour</span><span>Light</span><span>Dark</span></div>
+<sc-for list="{{tokens}}" as="k" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:150px 1fr 1fr;gap:16px;align-items:center;padding:6px 0"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">{{k.name}}</span><span style="font-size:12px;color:#6B665E">{{k.use}}</span></div><div style="display:flex;align-items:center;gap:12px"><span style="width:48px;height:32px;border-radius:10px;background:{{k.light}};box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)"></span><span style="font:13px 'JetBrains Mono',monospace">{{k.light}}</span></div><div style="display:flex;align-items:center;gap:12px"><span style="width:48px;height:32px;border-radius:10px;background:{{k.dark}};box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)"></span><span style="font:13px 'JetBrains Mono',monospace">{{k.dark}}</span></div></div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:32px">
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:4px">
+<div style="display:grid;grid-template-columns:110px 1fr 1fr;gap:16px;padding-bottom:12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B665E"><span>Category</span><span>Light · tint / dot</span><span>Dark · tint / dot</span></div>
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:110px 1fr 1fr;gap:16px;align-items:center;padding:6px 0"><span style="font-size:14px;font-weight:600">{{c.name}}</span><div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:{{c.tl}}"><span style="width:10px;height:10px;border-radius:5px;background:{{c.dl}}"></span><span style="font:12px 'JetBrains Mono',monospace;color:#2A2825">{{c.tl}} / {{c.dl}}</span></div><div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:{{c.td}}"><span style="width:10px;height:10px;border-radius:5px;background:{{c.dd}}"></span><span style="font:12px 'JetBrains Mono',monospace;color:#EEEAE3">{{c.td}} / {{c.dd}}</span></div></div>
+</sc-for>
+</div>
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B665E">Type · Manrope, tabular figures on all times</div>
+<sc-for list="{{types}}" as="t" hint-placeholder-count="7">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px"><span style="font-size:{{t.size}}px;font-weight:{{t.weight}};letter-spacing:{{t.ls}};line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap">{{t.sample}}</span><span style="font:12px 'JetBrains Mono',monospace;color:#6B665E;white-space:nowrap">{{t.spec}}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:16px">
+<div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B665E">Spacing · 8 pt grid</div>
+<sc-for list="{{spacing}}" as="s" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:48px 1fr 1fr;gap:16px;align-items:center"><span style="font:13px 'JetBrains Mono',monospace">{{s.v}}</span><span style="height:12px;width:{{s.v}}px;border-radius:3px;background:#5E7A62"></span><span style="font-size:13px;color:#6B665E">{{s.use}}</span></div>
+</sc-for>
+</div>
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:20px">
+<div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B665E">Corner radii · no borders, soft elevation only</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px">
+<sc-for list="{{radii}}" as="q" hint-placeholder-count="6">
+<div style="display:flex;flex-direction:column;gap:8px"><span style="width:80px;height:80px;border-radius:{{q.r}}px;background:#ECE7DF"></span><span style="font:13px 'JetBrains Mono',monospace">{{q.label}}</span><span style="font-size:12px;color:#6B665E">{{q.use}}</span></div>
+</sc-for>
+</div>
+<div style="font-size:13px;line-height:1.5;color:#6B665E">Elevation: card <span style="font-family:'JetBrains Mono',monospace">0 1 2 / 0 12 32</span> in the shadow colour. Sheet <span style="font-family:'JetBrains Mono',monospace">0 -12 40</span>. Nothing else casts a shadow.</div>
+</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid rgba(42,40,37,.14);padding-top:24px"><span style="font-size:14px;font-weight:700;color:#4A644E;font-variant-numeric:tabular-nums">11</span><h2 style="margin:0;font-size:30px;font-weight:500;letter-spacing:-.01em">Key transitions</h2><span style="font-size:16px;color:#6B665E">Springs, not curves. Nothing pops in.</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,420px);gap:32px">
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:16px">
+<span style="font-size:22px;font-weight:500">Check-in → Today</span>
+<ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.5;color:#3E3B37"><li>“Build my day” fades its label and morphs into the hero card’s shape (Hero widget, shared bounds).</li><li>Picker and chips slide down 24 dp and fade out over 200 ms.</li><li>Timeline rows stagger in from 12 dp below, 30 ms apart.</li><li>The list settles scrolled to “now”. One soft confirmation haptic.</li></ol>
+<span style="font:13px/1.5 'JetBrains Mono',monospace;color:#6B665E">SpringDescription(mass 1, stiffness 260, damping 28) · ~380 ms</span>
+</div>
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:16px">
+<span style="font-size:22px;font-weight:500">Card → sheet</span>
+<ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.5;color:#3E3B37"><li>The tapped row or hero card grows into the sheet. Title and time are shared elements and keep their position.</li><li>Corner radius goes 16 → 32. The scrim fades to full in the same spring.</li><li>Detail rows and actions fade in once the sheet passes 70% height.</li><li>Drag down to reverse at the same spring. Releasing fast dismisses.</li></ol>
+<span style="font:13px/1.5 'JetBrains Mono',monospace;color:#6B665E">stiffness 300, damping 30 · ~320 ms · velocity carried from the drag</span>
+</div>
+<div style="padding:32px;border-radius:24px;background:#FCFAF6;display:flex;flex-direction:column;gap:16px">
+<span style="font-size:22px;font-weight:500">Re-plan</span>
+<ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.5;color:#3E3B37"><li>After +15 min, Running late or Skip, blocks after now slide to their new positions together (AnimatedList with implicit offsets).</li><li>Changed times cross-fade digit by digit. Tabular figures keep the column from jumping.</li><li>A skipped block fades and collapses its height. The next flexible block grows into the space.</li><li>If something got shorter, the summary card eases in above the list. No colour change.</li></ol>
+<span style="font:13px/1.5 'JetBrains Mono',monospace;color:#6B665E">stiffness 220, damping 26 · ~400 ms · light tick haptic per tap</span>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;night&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;gradient&quot;,&quot;photo&quot;],&quot;default&quot;:&quot;gradient&quot;,&quot;tsType&quot;:&quot;'gradient' | 'photo'&quot;},&quot;surfaces&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;solid&quot;,&quot;glass&quot;],&quot;default&quot;:&quot;glass&quot;,&quot;tsType&quot;:&quot;'solid' | 'glass'&quot;},&quot;background&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sky&quot;,&quot;plain&quot;],&quot;default&quot;:&quot;sky&quot;,&quot;tsType&quot;:&quot;'sky' | 'plain'&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sage&quot;,&quot;dusk&quot;],&quot;default&quot;:&quot;dusk&quot;,&quot;tsType&quot;:&quot;'sage' | 'dusk'&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const ACC = {
+      sage: { accent: 'light-dark(#5E7A62,#9CB79F)', soft: 'light-dark(#E1E8DC,#2C362D)', ink: 'light-dark(#4A644E,#B4CCB6)', on: 'light-dark(#FFFFFF,#17211A)', hex: ['#5E7A62', '#9CB79F', '#E1E8DC', '#2C362D'] },
+      dusk: { accent: 'light-dark(#5C6F8C,#9FB0CB)', soft: 'light-dark(#E2E7EF,#2A303B)', ink: 'light-dark(#475A76,#B7C5DB)', on: 'light-dark(#FFFFFF,#161C26)', hex: ['#5C6F8C', '#9FB0CB', '#E2E7EF', '#2A303B'] }
+    };
+    const acc = ACC[this.props.accent ?? 'dusk'] || ACC.dusk;
+    const sky = (this.props.background ?? 'sky') === 'sky';
+    const dayBg = sky ? 'linear-gradient(rgba(245,242,236,.42),rgba(245,242,236,.42)), url(sky.png) center/cover' : 'var(--bg)';
+    const noonBg = sky ? '#F7CFAE url(afternoon-cozy.png) center/cover' : 'var(--bg)';
+    const night = this.props.night ?? 'gradient';
+    const nightBg = !sky ? 'var(--bg)' : night === 'photo' ? 'linear-gradient(rgba(10,12,28,.35),rgba(10,12,28,.72) 55%,rgba(10,12,28,.82)), url(night-sky-soft.png) center/cover' : '#0B1026 url(night-plain.png) center/cover';
+    const T0 = {};
+    const glass = (this.props.surfaces ?? 'glass') === 'glass';
+    const surface = glass ? 'light-dark(rgba(255,255,255,.62),rgba(26,28,44,.6))' : 'light-dark(#FCFAF6,#252420)';
+    const sunk = glass ? 'light-dark(rgba(255,255,255,.42),rgba(44,46,64,.55))' : 'light-dark(#ECE7DF,#2F2D29)';
+    const blur = glass ? 'blur(24px) saturate(1.3)' : 'none';
+    T0.focus='light-dark(#E5E9EF,#252A31)';
+    T0.body='light-dark(#F1E5DA,#342B25)';
+    T0.food='light-dark(#F1EBD8,#322E23)';
+    T0.rest='light-dark(#EAE6EE,#2C2930)';
+    T0.leisure='light-dark(#F1E3E3,#342828)';
+    T0.errand='light-dark(#EAE7E2,#2D2C29)';
+    const ink2 = sky ? 'light-dark(#45413B,#CFCAC1)' : 'light-dark(#6B665E,#A8A299)';
+    const D = { focus: 'var(--d-focus)', body: 'var(--d-body)', food: 'var(--d-food)', rest: 'var(--d-rest)', leisure: 'var(--d-leisure)', errand: 'var(--d-errand)' };
+    const r = (t, name, detail, cat, st) => ({ t, name, detail, dot: st === 'now' ? 'var(--accent)' : D[cat], ds: st === 'now' ? 12 : 8, op: st === 'past' ? 0.42 : 1, bg: st === 'now' ? 'var(--accent-soft)' : 'transparent', w: st === 'now' ? 600 : 500 });
+    const today = [
+      r('06:20', 'Breakfast', 'Muesli + Skyr · 25 min', 'food', 'past'),
+      r('07:30', 'Gym', 'Push day · 1h 45', 'body', 'past'),
+      r('09:15', 'Shower & snack', '30 min', 'rest', 'past'),
+      r('09:45', 'Career block', 'Applications + portfolio · 2h 45', 'focus', 'now'),
+      r('12:30', 'Cook & lunch', 'Chicken rice bowls · 1h', 'food'),
+      r('13:30', 'Walk', '30 min', 'body'),
+      r('14:00', 'Coding', 'Flutter timeline view · 2h 15', 'focus'),
+      r('16:30', 'Haircut', 'Errand · 1h', 'errand'),
+      r('18:00', 'Dinner', '45 min', 'food'),
+      r('18:45', 'Gaming', '1h 30', 'leisure'),
+      r('20:15', 'Reading', '1h 30', 'rest'),
+      r('21:45', 'Wind down', '45 min', 'rest'),
+      r('22:30', 'Lights out', 'Bedtime', 'rest')
+    ];
+    const shortList = [
+      r('07:55', 'Breakfast', 'Muesli + Skyr · 25 min', 'food', 'past'),
+      r('08:20', 'Gym', 'Push day · 1h 45', 'body', 'now'),
+      r('10:05', 'Shower & snack', '30 min', 'rest'),
+      r('10:35', 'Career block', '2h 45', 'focus'),
+      r('13:20', 'Cook & lunch', '1h', 'food'),
+      r('14:20', 'Coding', '1h 15 · usually 2h 15', 'focus'),
+      r('15:35', 'Walk', '30 min', 'body'),
+      r('16:30', 'Haircut', 'Errand · 1h', 'errand')
+    ];
+    return {
+      acc, ink2, surface, sunk, blur,
+      accSoft: glass ? 'color-mix(in oklch, var(--accent) 24%, var(--surface))' : acc.soft,
+      tints: Object.fromEntries(Object.keys(T0).map(k => [k, glass ? `color-mix(in oklch, var(--d-${k}) 20%, var(--surface))` : T0[k]])),
+      scrim: sky ? 'light-dark(rgba(20,26,48,.3),rgba(4,6,18,.6))' : 'light-dark(rgba(30,25,20,.32),rgba(0,0,0,.55))',
+      nightC: sky ? 'light-dark(#D9DCE6,#070A1A)' : 'light-dark(#E3DDD3,#121110)',
+      nightCard: sky ? 'light-dark(#E6E8EF,#141A33)' : 'light-dark(#EDE8E0,#1D1C1A)',
+      wall: sky ? 'light-dark(#C7D2E3,#0D1330)' : 'light-dark(#D6CEC1,#1E1C19)',
+      wallHi: sky ? 'light-dark(#E6ECF5,#1F2750)' : 'light-dark(#EEE8DE,#2C2A26)',
+      modes: [{ scheme: 'light', bg: dayBg, greet: 'Good morning.', time: '06:07' }, { scheme: 'light', bg: noonBg, greet: 'Good afternoon.', time: '13:40' }, { scheme: 'dark', bg: nightBg, greet: 'Good evening.', time: '19:30' }],
+      todayList: today.slice(2),
+      shortList,
+      sheetList: today,
+      fileBlocks: [
+        { name: 'Breakfast', len: '25 min · fixed', dot: D.food },
+        { name: 'Gym', len: '1h 45 · gym days', dot: D.body },
+        { name: 'Career block', len: '2h 45 · min 1h 30', dot: D.focus },
+        { name: 'Cook & lunch', len: '1h · fixed', dot: D.food },
+        { name: 'Coding', len: '2h 15 · min 1h', dot: D.focus },
+        { name: 'Gaming', len: '1h 30 · min 45 min', dot: D.leisure },
+        { name: 'Reading', len: '1h 30 · min 30 min', dot: D.rest },
+        { name: 'Lights out', len: '22:30 · fixed', dot: D.rest }
+      ],
+      rules: [
+        'Lights out is 22:30 and never moves.',
+        'Meals, sleep and errands are never shortened.',
+        'When the day is full, shorten Gaming first, then Coding.',
+        'Gym only appears on gym days.'
+      ],
+      tokens: [
+        { name: 'Background', use: 'Screen', light: '#F5F2EC', dark: '#1B1A18' },
+        { name: 'Surface', use: 'Cards, sheet', light: '#FCFAF6', dark: '#252420' },
+        { name: 'Sunk', use: 'Chips, secondary buttons', light: '#ECE7DF', dark: '#2F2D29' },
+        { name: 'Ink', use: 'Primary text', light: '#2A2825', dark: '#EEEAE3' },
+        { name: 'Ink 2', use: 'Secondary text', light: '#6B665E', dark: '#A8A299' },
+        { name: 'Ink 3', use: 'Icons, dividers', light: '#8E887F', dark: '#78726A' },
+        { name: 'Line', use: 'Timeline rail', light: '#E2DDD4', dark: '#34322E' },
+        { name: 'Accent', use: 'Now, primary action', light: acc.hex[0], dark: acc.hex[1] },
+        { name: 'Accent soft', use: 'Now row, selected chips', light: acc.hex[2], dark: acc.hex[3] },
+        { name: 'Night', use: 'Wind-down screen', light: '#E3DDD3', dark: '#121110' }
+      ],
+      cats: [
+        { name: 'Focus work', tl: '#E5E9EF', dl: '#7A89A2', td: '#252A31', dd: '#94A3BB' },
+        { name: 'Body', tl: '#F1E5DA', dl: '#B68767', td: '#342B25', dd: '#C99E80' },
+        { name: 'Food', tl: '#F1EBD8', dl: '#B19A5F', td: '#322E23', dd: '#C8B27A' },
+        { name: 'Rest', tl: '#EAE6EE', dl: '#958AA3', td: '#2C2930', dd: '#ADA2BA' },
+        { name: 'Leisure', tl: '#F1E3E3', dl: '#B37F7F', td: '#342828', dd: '#C99999' },
+        { name: 'Errand', tl: '#EAE7E2', dl: '#8E887F', td: '#2D2C29', dd: '#8A847B' }
+      ],
+      types: [
+        { sample: '22:30', size: 104, weight: 200, ls: '-.045em', spec: 'Clock 104 / 200' },
+        { sample: '06:05', size: 60, weight: 300, ls: '-.02em', spec: 'Picker 60 / 300' },
+        { sample: 'Career block', size: 36, weight: 300, ls: '-.025em', spec: 'Hero 36 / 300' },
+        { sample: 'Today', size: 22, weight: 500, ls: '-.01em', spec: 'Title 22 / 500' },
+        { sample: 'Cook & lunch', size: 17, weight: 500, ls: '0', spec: 'Body strong 17 / 500' },
+        { sample: 'Applications + portfolio', size: 15, weight: 400, ls: '0', spec: 'Body 15–16 / 400' },
+        { sample: 'Up next · 12:30', size: 13, weight: 600, ls: '0', spec: 'Label 13 / 600' }
+      ],
+      spacing: [
+        { v: 8, use: 'Chip gaps, icon to label' },
+        { v: 12, use: 'Card to card' },
+        { v: 16, use: 'Card margin from screen edge' },
+        { v: 24, use: 'Card padding, text margin' },
+        { v: 32, use: 'Onboarding margins' },
+        { v: 48, use: 'Bottom inset above gesture bar' }
+      ],
+      radii: [
+        { r: 6, label: '6', use: 'Dots, bars' },
+        { r: 16, label: '16', use: 'Timeline rows' },
+        { r: 20, label: '20', use: 'Small cards' },
+        { r: 24, label: '24', use: 'Cards, groups' },
+        { r: 28, label: '28', use: 'Hero card' },
+        { r: 32, label: '32', use: 'Sheet top' },
+        { r: 40, label: 'pill', use: 'Buttons, chips' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
