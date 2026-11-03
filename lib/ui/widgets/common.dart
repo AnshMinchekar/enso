@@ -6,6 +6,8 @@ import '../theme.dart';
 import 'line_icon.dart';
 import 'surfaces.dart';
 
+export 'screen_image.dart' show BottomFade;
+
 /// 64-high bar with a back button and a title.
 class ScreenHeader extends StatelessWidget {
   const ScreenHeader({super.key, required this.title, this.onBack});
@@ -303,26 +305,6 @@ class BlocksAndRules extends StatelessWidget {
       ],
     );
   }
-}
-
-/// Fades a scrolling area out at the bottom, as in the mockups.
-class BottomFade extends StatelessWidget {
-  const BottomFade({super.key, required this.child, this.from = 0.8});
-
-  final Widget child;
-  final double from;
-
-  @override
-  Widget build(BuildContext context) => ShaderMask(
-    blendMode: BlendMode.dstIn,
-    shaderCallback: (rect) => LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: const [Colors.black, Colors.black, Colors.transparent],
-      stops: [0, from, 1],
-    ).createShader(rect),
-    child: child,
-  );
 }
 
 /// Picks one option in a sheet, for example the heads-up length.

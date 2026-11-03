@@ -13,6 +13,10 @@ import 'theme.dart';
 /// step 6.
 const String kDemoScheduleAsset = 'assets/demo/sample.md';
 
+/// Test tools (the look switch, the onboarding entry in Settings) exist in
+/// debug and profile builds, never in release builds.
+const bool kDevTools = !kReleaseMode;
+
 /// Default notification sound (spec § Settings).
 const String kDefaultSound = 'Soft chime';
 
@@ -275,7 +279,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   /// Debug builds only: cycles auto → morning → afternoon → evening → wind
   /// down → auto.
   void cycleDebugLook() {
-    if (!kDebugMode) return;
+    if (!kDevTools) return;
     _debugLook = DebugLook.values[(_debugLook.index + 1) % DebugLook.values.length];
     HapticFeedback.selectionClick();
     notifyListeners();

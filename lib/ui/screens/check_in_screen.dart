@@ -322,6 +322,7 @@ class _ErrandSheetState extends State<_ErrandSheet> {
       padding: EdgeInsets.only(bottom: keyboard),
       child: Glass(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+        live: true,
         shadows: Elevation.sheet(p),
         padding: EdgeInsets.fromLTRB(
           24,

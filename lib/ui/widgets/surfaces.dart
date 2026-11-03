@@ -3,13 +3,20 @@ import 'package:flutter/services.dart';
 
 import '../theme.dart';
 import 'line_icon.dart';
+import 'screen_image.dart';
 
 /// Which glass fill a [Glass] panel uses.
 enum GlassTone { surface, sunk }
 
-/// A frosted panel: backdrop blur plus a translucent fill. Falls back to the
-/// solid colour when glass is off. Never used for primary buttons or the
-/// "now" highlight.
+/// A frosted panel: blurred background plus a translucent fill. Falls back
+/// to the solid colour when glass is off. Never used for primary buttons or
+/// the "now" highlight.
+///
+/// Panels on the background draw a pre-blurred copy of the artwork aligned to
+/// the screen ([Backdrops.glass]), which costs one image draw instead of a
+/// live blur every frame. Sheets set [live]: they sit over moving content, so
+/// they blur what is really behind them. A panel inside another panel or
+/// sheet only adds its fill, like frosted glass on frosted glass.
 class Glass extends StatelessWidget {
   const Glass({
     super.key,
@@ -22,7 +29,11 @@ class Glass extends StatelessWidget {
     this.shadow = false,
     this.shadows,
     this.color,
+    this.live = false,
   });
+
+  /// Blur whatever is behind the panel (sheets).
+  final bool live;
 
   final Widget child;
   final GlassTone tone;
@@ -51,11 +62,23 @@ class Glass extends StatelessWidget {
       decoration: BoxDecoration(color: fill, borderRadius: r),
       child: padding == null ? child : Padding(padding: padding!, child: child),
     );
-    if (p.glass) {
-      body = ClipRRect(
-        borderRadius: r,
-        child: BackdropFilter.grouped(filter: glassFilter(), child: body),
-      );
+    if (p.glass && !_InsideGlass.of(context)) {
+      final scope = AmbienceScope.maybeOf(context);
+      if (live || scope == null || scope.night) {
+        body = ClipRRect(
+          borderRadius: r,
+          child: BackdropFilter.grouped(
+            filter: glassFilter(),
+            child: _InsideGlass(child: body),
+          ),
+        );
+      } else {
+        body = ScreenImage(
+          asset: Backdrops.glass(scope.ambience),
+          borderRadius: r,
+          child: _InsideGlass(child: body),
+        );
+      }
     }
     final cast = shadows ?? (shadow ? Elevation.card(p) : null);
     if (cast != null) {
@@ -66,6 +89,17 @@ class Glass extends StatelessWidget {
     }
     return margin == null ? body : Padding(padding: margin!, child: body);
   }
+}
+
+/// Marks content that already sits on glass.
+class _InsideGlass extends InheritedWidget {
+  const _InsideGlass({required super.child});
+
+  static bool of(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<_InsideGlass>() != null;
+
+  @override
+  bool updateShouldNotify(_InsideGlass old) => false;
 }
 
 /// Shrinks very slightly while pressed, on the re-plan spring.
