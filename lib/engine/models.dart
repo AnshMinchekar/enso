@@ -296,6 +296,18 @@ class DayInput {
   /// Blocks taken out of today: skipped, or marked done before they started.
   final Set<String> removed;
 
+  /// The same day with a different bedtime override; null goes back to the
+  /// file's bedtime.
+  DayInput withBedtimeOverride(ClockTime? bedtime) => DayInput(
+    wake: wake,
+    dayTypes: dayTypes,
+    errands: errands,
+    bedtimeOverride: bedtime,
+    now: now,
+    locked: locked,
+    removed: removed,
+  );
+
   DayInput copyWith({
     DateTime? now,
     List<LockedBlock>? locked,

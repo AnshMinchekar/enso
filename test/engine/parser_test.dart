@@ -191,7 +191,19 @@ blocks:
         '  - {id: a, name: A, minutes: 10, latest_start: "9am"}\n```\n',
       );
       expect(result.errors.map((e) => e.line), [2, 3, 6]);
-      expect(result.errors.first.message, contains('bedtime'));
+      expect(result.errors.first.message, startsWith('Bedtime should be'));
+    });
+
+    test('times without a colon suggest the fix', () {
+      final result = parseSchedule(
+        '```routine\nbedtime: 2230\nwake_target: "6.30"\nday_types: [gym]\nblocks:\n'
+        '  - {id: a, name: A, minutes: 10, at: "9am"}\n```\n',
+      );
+      expect(result.errors.map((e) => e.suggestion), ['"22:30"', '"06:30"', null]);
+      expect(
+        result.errors.first.message,
+        'Bedtime should be a 24-hour time in quotes like "22:30", but it is 2230.',
+      );
     });
 
     test('missing top-level fields', () {

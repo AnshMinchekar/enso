@@ -23,6 +23,7 @@ flutter:
   assets:
     - assets/demo/
     - assets/backgrounds/
+    - assets/prompts/
 
   fonts:
     - family: Manrope
