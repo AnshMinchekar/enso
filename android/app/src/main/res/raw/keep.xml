@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Keep resources that are only referenced from Dart by name, so release
+     builds don't strip the notification icon or sound. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_enso,@raw/soft_chime" />

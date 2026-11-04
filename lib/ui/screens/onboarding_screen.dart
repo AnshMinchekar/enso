@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_state.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/line_icon.dart';
@@ -48,7 +49,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         onSelect: (t) => setState(() => _template = t),
         onNext: _next,
       ),
-      _ => _Permissions(onAllow: _finish, onLater: _finish),
+      _ => _Permissions(
+        onAllow: () async {
+          await AppScope.read(context).allowReminders();
+          if (mounted) _finish();
+        },
+        onLater: _finish,
+      ),
     };
     // Steps cross-fade and rise 24 dp on the check-in spring, like every
     // other screen change. Back returns to the previous step.
