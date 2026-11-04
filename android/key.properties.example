@@ -1,0 +1,7 @@
+# Copy to android/key.properties (git-ignored) and fill in. Never commit the
+# real file or the keystore. See docs/release.md.
+storePassword=
+keyPassword=
+keyAlias=enso
+# Path to the keystore, relative to android/app or absolute.
+storeFile=/absolute/path/to/enso-release.jks
