@@ -244,7 +244,7 @@ class _PasteResultScreenState extends State<PasteResultScreen> {
   }
 
   void _use(Schedule s) {
-    AppScope.read(context).useSchedule(s, name: pastedFileName(_text));
+    AppScope.read(context).useSchedule(s, name: pastedFileName(_text), text: _text);
     HapticFeedback.mediumImpact();
     Navigator.of(context).popUntil((r) => r.isFirst);
   }
