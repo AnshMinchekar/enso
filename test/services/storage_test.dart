@@ -80,7 +80,9 @@ void main() {
 
     setUp(() {
       now = at(6, 16);
-      store = MemoryStore();
+      // A second launch: a schedule was chosen before.
+      store = MemoryStore()
+        ..schedule = StoredSchedule(name: 'sample.md', text: sampleText, since: at(6, 0));
     });
 
     test('today, its actions and the settings come back', () async {
@@ -152,19 +154,24 @@ void main() {
       expect(app.scheduleName, 'workday-routine.md');
       expect(app.schedule!.bedtime, const ClockTime(23, 0));
       expect(app.scheduleSince, at(6, 16));
+      expect(app.onboarding, isFalse);
       app.dispose();
     });
 
-    test('a saved file that no longer parses shows its errors and keeps the app usable', () async {
-      store.schedule = StoredSchedule(
-        name: 'mine.md',
-        text: sampleText.replaceFirst('right_after: cook', 'right_after: cok'),
-        since: at(6, 0),
-      );
-      final app = await launch();
-      expect(app.fileErrors.single.line, 15);
-      expect(app.schedule, isNotNull, reason: 'falls back instead of leaving the app empty');
-      app.dispose();
-    });
+    test(
+      'a saved file that no longer parses shows its errors and offers onboarding again',
+      () async {
+        store.schedule = StoredSchedule(
+          name: 'mine.md',
+          text: sampleText.replaceFirst('right_after: cook', 'right_after: cok'),
+          since: at(6, 0),
+        );
+        final app = await launch();
+        expect(app.fileErrors.single.line, 15);
+        expect(app.schedule, isNull);
+        expect(app.onboarding, isTrue, reason: 'pick, paste or import a schedule again');
+        app.dispose();
+      },
+    );
   });
 }

@@ -76,8 +76,7 @@ class ScheduleFileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                // The system file picker arrives with import in step 6.
-                const PrimaryButton(label: 'Import file'),
+                PrimaryButton(label: 'Import file', onTap: () => importScheduleFile(context)),
               ],
             ),
           ),

@@ -1,31 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
+import '../templates.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/line_icon.dart';
 import '../widgets/surfaces.dart';
 import 'make_with_ai.dart';
 
-/// The starter templates offered in onboarding (files arrive in step 6).
-enum StarterTemplate {
-  student('Student', 'Lectures, study blocks, a later start'),
-  nineToFive('9 to 5', 'Commute, work hours, evenings free'),
-  gymFocused('Gym-focused', 'Training first, meals around it, early nights');
-
-  const StarterTemplate(this.title, this.subtitle);
-
-  final String title;
-  final String subtitle;
-}
-
 /// Three short steps: welcome, pick a starting point, permissions.
 ///
-/// In this build it is reached from Settings in debug builds only. Step 4
-/// requests the permissions and step 6 makes it the real first launch with
-/// templates and file import.
+/// On first launch it is the home screen ([asHome]) and finishing it opens
+/// Today. Test builds can also replay it from Settings.
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({super.key, this.asHome = false});
+
+  final bool asHome;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -34,20 +24,47 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   int _step = 0;
   StarterTemplate? _template;
+  bool _busy = false;
 
   void _next() => setState(() => _step++);
 
-  // Navigator.pop, not maybePop: the back handler only steps backwards.
-  void _finish() => Navigator.of(context).pop();
+  void _finish() {
+    if (widget.asHome) {
+      AppScope.read(context).finishOnboarding();
+    } else {
+      // Navigator.pop, not maybePop: the back handler only steps backwards.
+      Navigator.of(context).pop();
+    }
+  }
+
+  /// Continue on the template step: a chosen template becomes the schedule
+  /// file; an imported or pasted one is already in place.
+  Future<void> _continue() async {
+    final t = _template;
+    if (t != null) {
+      setState(() => _busy = true);
+      await AppScope.read(context).useTemplate(t);
+      if (!mounted) return;
+      setState(() => _busy = false);
+    }
+    _next();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state = AppScope.of(context);
+    // A schedule that came from a file or an AI assistant, not a template.
+    final own = state.schedule != null && StarterTemplate.byFileName(state.scheduleName) == null
+        ? state.scheduleName
+        : null;
     final Widget page = switch (_step) {
       0 => _Welcome(onNext: _next),
       1 => _Template(
         selected: _template,
+        ownSchedule: own,
         onSelect: (t) => setState(() => _template = t),
-        onNext: _next,
+        onSelectOwn: () => setState(() => _template = null),
+        onNext: (_template != null || own != null) && !_busy ? _continue : null,
       ),
       _ => _Permissions(
         onAllow: () async {
@@ -223,11 +240,23 @@ class _Welcome extends StatelessWidget {
 }
 
 class _Template extends StatelessWidget {
-  const _Template({required this.selected, required this.onSelect, required this.onNext});
+  const _Template({
+    required this.selected,
+    required this.ownSchedule,
+    required this.onSelect,
+    required this.onSelectOwn,
+    required this.onNext,
+  });
 
   final StarterTemplate? selected;
+
+  /// File name of an imported or pasted schedule, if there is one.
+  final String? ownSchedule;
   final ValueChanged<StarterTemplate> onSelect;
-  final VoidCallback onNext;
+  final VoidCallback onSelectOwn;
+
+  /// Null until something is chosen.
+  final VoidCallback? onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -261,6 +290,15 @@ class _Template extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (ownSchedule != null) ...[
+                      ChoiceRow(
+                        label: 'Your own schedule',
+                        subtitle: ownSchedule,
+                        selected: selected == null,
+                        onTap: onSelectOwn,
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     for (final t in StarterTemplate.values) ...[
                       ChoiceRow(
                         label: t.title,
@@ -278,11 +316,11 @@ class _Template extends StatelessWidget {
                         style: EnsoType.caption.copyWith(color: p.ink3),
                       ),
                     ),
-                    // File import arrives in step 6.
-                    const _AltRow(
+                    _AltRow(
                       icon: LineIcons.file,
                       title: 'Import a schedule file',
                       subtitle: 'A Markdown file on this phone',
+                      onTap: () => importScheduleFile(context),
                     ),
                     const SizedBox(height: 12),
                     _AltRow(

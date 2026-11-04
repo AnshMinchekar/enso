@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
 
 import '../../engine/models.dart';
@@ -27,7 +28,51 @@ Future<void> showMakeWithAiSheet(BuildContext context) => Navigator.of(context).
 Future<void> pasteFromClipboard(BuildContext context) async {
   final navigator = Navigator.of(context);
   final text = await readClipboard();
-  navigator.push(EnsoPageRoute<void>(builder: (_) => PasteResultScreen(initialText: text)));
+  navigator.push(EnsoPageRoute<void>(builder: (_) => ScheduleResultScreen(initialText: text)));
+}
+
+/// Opens the system file picker, then shows the result screen for the file.
+Future<void> importScheduleFile(BuildContext context) async {
+  final navigator = Navigator.of(context);
+  final picked = await pickScheduleFile();
+  if (picked == null) return;
+  navigator.push(
+    EnsoPageRoute<void>(
+      builder: (_) =>
+          ScheduleResultScreen(initialText: picked.text, source: ScheduleSource.file(picked.name)),
+    ),
+  );
+}
+
+/// A picked file's name and text.
+typedef PickedFile = ({String name, String text});
+
+/// The system file picker. Any file can be chosen: Markdown often has no
+/// reliable type on Android, so the content decides. Tests replace this.
+Future<PickedFile?> Function() pickScheduleFile = _pickWithFileSelector;
+
+Future<PickedFile?> _pickWithFileSelector() async {
+  final file = await openFile();
+  if (file == null) return null;
+  try {
+    return (name: file.name, text: await file.readAsString());
+  } on FormatException {
+    // Not text at all: treat it as a file without a schedule.
+    return (name: file.name, text: '');
+  }
+}
+
+/// Where a schedule being checked came from.
+class ScheduleSource {
+  const ScheduleSource.clipboard() : fileName = null;
+  const ScheduleSource.file(String this.fileName);
+
+  final String? fileName;
+
+  bool get isFile => fileName != null;
+  String get screenTitle => isFile ? 'Imported file' : 'Pasted schedule';
+  String get cardTitle => fileName ?? 'From your clipboard';
+  LineIcons get icon => isFile ? LineIcons.file : LineIcons.clipboard;
 }
 
 /// Plain text on the clipboard, or an empty string.
@@ -69,7 +114,7 @@ class _MakeWithAiSheetState extends State<MakeWithAiSheet> {
     final navigator = Navigator.of(context);
     final text = await readClipboard();
     navigator.pop();
-    navigator.push(EnsoPageRoute<void>(builder: (_) => PasteResultScreen(initialText: text)));
+    navigator.push(EnsoPageRoute<void>(builder: (_) => ScheduleResultScreen(initialText: text)));
   }
 
   @override
@@ -219,32 +264,65 @@ String pastedFileName(String text) {
   return '${slug.isEmpty ? 'my-schedule' : slug}.md';
 }
 
-/// What "Paste schedule" shows: valid, no schedule found, or errors. The
-/// current schedule keeps running until one is used.
-class PasteResultScreen extends StatefulWidget {
-  const PasteResultScreen({super.key, required this.initialText});
+/// What "Paste schedule" or "Import file" shows: valid, no schedule found,
+/// or errors. The current schedule keeps running until one is used.
+class ScheduleResultScreen extends StatefulWidget {
+  const ScheduleResultScreen({
+    super.key,
+    required this.initialText,
+    this.source = const ScheduleSource.clipboard(),
+  });
 
   final String initialText;
+  final ScheduleSource source;
 
   @override
-  State<PasteResultScreen> createState() => _PasteResultScreenState();
+  State<ScheduleResultScreen> createState() => _ScheduleResultScreenState();
 }
 
-class _PasteResultScreenState extends State<PasteResultScreen> {
+class _ScheduleResultScreenState extends State<ScheduleResultScreen> {
   late String _text = widget.initialText;
+  late ScheduleSource _source = widget.source;
   late ParseResult _result = parseSchedule(_text);
 
-  Future<void> _pasteAgain() async {
-    final text = await readClipboard();
-    if (!mounted) return;
-    setState(() {
-      _text = text;
-      _result = parseSchedule(text);
+  @override
+  void initState() {
+    super.initState();
+    // After the first frame: reporting changes app state, which can't
+    // happen while this screen is being built.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _report();
     });
   }
 
+  /// A broken file is also shown on the schedule file screen while the
+  /// previous schedule keeps running.
+  void _report() {
+    if (!_source.isFile || _result.isValid || _result.hasNoRoutineBlock) return;
+    final state = AppScope.read(context);
+    if (state.schedule != null) state.reportFileErrors(_result.errors);
+  }
+
+  Future<void> _retry() async {
+    final PickedFile? next;
+    if (_source.isFile) {
+      next = await pickScheduleFile();
+      if (next == null) return;
+    } else {
+      next = (name: '', text: await readClipboard());
+    }
+    if (!mounted) return;
+    setState(() {
+      _text = next!.text;
+      if (_source.isFile) _source = ScheduleSource.file(next.name);
+      _result = parseSchedule(_text);
+    });
+    _report();
+  }
+
   void _use(Schedule s) {
-    AppScope.read(context).useSchedule(s, name: pastedFileName(_text), text: _text);
+    final name = _source.fileName ?? pastedFileName(_text);
+    AppScope.read(context).useSchedule(s, name: name, text: _text);
     HapticFeedback.mediumImpact();
     Navigator.of(context).popUntil((r) => r.isFirst);
   }
@@ -255,13 +333,14 @@ class _PasteResultScreenState extends State<PasteResultScreen> {
     final Widget body;
     final List<Widget> actions;
     final cancel = TextAction(label: 'Cancel', onTap: () => Navigator.of(context).maybePop());
+    final retryLabel = _source.isFile ? 'Choose another file' : null;
     if (schedule != null) {
-      body = _Valid(schedule: schedule);
+      body = _Valid(schedule: schedule, source: _source);
       actions = [PrimaryButton(label: 'Use this schedule', onTap: () => _use(schedule)), cancel];
     } else if (_text.trim().isEmpty || _result.hasNoRoutineBlock) {
-      body = const _NotFound();
+      body = _NotFound(source: _source);
       actions = [
-        PrimaryButton(label: 'Try again', onTap: _pasteAgain),
+        PrimaryButton(label: retryLabel ?? 'Try again', onTap: _retry),
         TextAction(
           label: 'See the steps',
           onTap: () {
@@ -271,15 +350,15 @@ class _PasteResultScreenState extends State<PasteResultScreen> {
         ),
       ];
     } else {
-      body = _Errors(errors: _result.errors, blocks: countBlockLines(_text));
-      actions = [PrimaryButton(label: 'Paste again', onTap: _pasteAgain), cancel];
+      body = _Errors(errors: _result.errors, blocks: countBlockLines(_text), source: _source);
+      actions = [PrimaryButton(label: retryLabel ?? 'Paste again', onTap: _retry), cancel];
     }
     return SafeArea(
       bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const ScreenHeader(title: 'Pasted schedule'),
+          ScreenHeader(title: _source.screenTitle),
           Expanded(
             child: AnimatedSwitcher(
               duration: Motion.replanDuration,
@@ -309,9 +388,10 @@ class _PasteResultScreenState extends State<PasteResultScreen> {
 }
 
 class _Valid extends StatelessWidget {
-  const _Valid({required this.schedule});
+  const _Valid({required this.schedule, required this.source});
 
   final Schedule schedule;
+  final ScheduleSource source;
 
   @override
   Widget build(BuildContext context) => BottomFade(
@@ -319,8 +399,8 @@ class _Valid extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(Space.md, 8, Space.md, 48),
       children: [
         SourceCard(
-          icon: LineIcons.clipboard,
-          title: 'From your clipboard',
+          icon: source.icon,
+          title: source.cardTitle,
           subtitle: '${scheduleCounts(schedule)} · ready to use',
         ),
         const SizedBox(height: 12),
@@ -331,7 +411,9 @@ class _Valid extends StatelessWidget {
 }
 
 class _NotFound extends StatelessWidget {
-  const _NotFound();
+  const _NotFound({required this.source});
+
+  final ScheduleSource source;
 
   @override
   Widget build(BuildContext context) {
@@ -347,15 +429,18 @@ class _NotFound extends StatelessWidget {
             radius: 32,
             child: SizedBox.square(
               dimension: 64,
-              child: Center(child: LineIcon(LineIcons.clipboard, size: 28, color: p.ink2)),
+              child: Center(child: LineIcon(source.icon, size: 28, color: p.ink2)),
             ),
           ),
           const SizedBox(height: 20),
           Text('No schedule found', style: EnsoType.heading.copyWith(color: p.ink)),
           const SizedBox(height: 20),
           Text(
-            'The copied text has no Enso schedule in it. '
-            'Copy the assistant’s whole answer, then try again.',
+            source.isFile
+                ? 'This file has no Enso schedule in it. Choose the Markdown file '
+                      'with the routine block, or make one with AI.'
+                : 'The copied text has no Enso schedule in it. '
+                      'Copy the assistant’s whole answer, then try again.',
             style: EnsoType.body.copyWith(height: 1.55, color: p.ink2),
           ),
         ],
@@ -365,10 +450,11 @@ class _NotFound extends StatelessWidget {
 }
 
 class _Errors extends StatelessWidget {
-  const _Errors({required this.errors, required this.blocks});
+  const _Errors({required this.errors, required this.blocks, required this.source});
 
   final List<ScheduleError> errors;
   final int blocks;
+  final ScheduleSource source;
 
   @override
   Widget build(BuildContext context) {
@@ -382,7 +468,7 @@ class _Errors extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(Space.md, 8, Space.md, 48),
         children: [
-          SourceCard(icon: LineIcons.clipboard, title: 'From your clipboard', subtitle: counts),
+          SourceCard(icon: source.icon, title: source.cardTitle, subtitle: counts),
           for (final e in errors) ...[const SizedBox(height: 12), ErrorCard(error: e)],
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
